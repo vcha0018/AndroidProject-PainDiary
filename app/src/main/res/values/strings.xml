@@ -1,5 +1,22 @@
 <resources>
     <string name="app_name">PainDiary</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="text_title_signin">SIGNIN</string>
+    <string name="enter_email">Email address</string>
+    <string name="enter_password">Password</string>
+    <string name="check_remember_me">Remember me</string>
+    <string name="button_forget_password">Forget password</string>
+    <string name="button_signin">SignIn</string>
+    <string name="text_msg_create_account">Don\'t have an account</string>
+    <string name="button_create_account">Create one</string>
+    <string name="text_title_signup">SIGNUP</string>
+    <string name="enter_full_name">Full name</string>
+    <string name="enter_create_password">Create new password</string>
+    <string name="enter_reenter_password">Re-enter password</string>
+    <string name="enter_phone_number">Phone number</string>
+    <string name="enter_birth_date">Birth date</string>
+    <string name="button_next">NEXT</string>
+    <string name="button_back">BACK</string>
+    <string name="button_have_account">I already have an account</string>
+    <string name="button_signup">SignUp</string>
+
 </resources>
