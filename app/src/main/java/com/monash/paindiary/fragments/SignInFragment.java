@@ -5,22 +5,31 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.os.Debug;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.monash.paindiary.R;
 import com.monash.paindiary.activities.MainActivity;
 import com.monash.paindiary.databinding.FragmentSignInBinding;
 import com.monash.paindiary.enums.FragmentEnums;
 
+import java.io.Console;
+
+// TODO 1. Incorrect fields error messages
+// TODO 2. Background theme change
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link SignInFragment} factory method to
  * create an instance of this fragment.
  */
 public class SignInFragment extends Fragment {
-    FragmentSignInBinding binding;
+    private FragmentSignInBinding binding;
+    private FirebaseAuth auth;
 
     public SignInFragment() {
         // Required empty public constructor
@@ -29,6 +38,7 @@ public class SignInFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        auth = FirebaseAuth.getInstance();
     }
 
     @Override
@@ -41,6 +51,18 @@ public class SignInFragment extends Fragment {
 
         binding.btnCreateAccount.setOnClickListener(v -> {
             ((MainActivity) getActivity()).changeFragment(FragmentEnums.SIGNUP);
+        });
+
+        binding.btnSignIn.setOnClickListener(v -> {
+            auth.signInWithEmailAndPassword(binding.editEmail.getText().toString(), binding.editPassword.getText().toString())
+                    .addOnSuccessListener(authResult -> {
+                        Toast.makeText(getContext(), "Login Success!", Toast.LENGTH_SHORT).show();
+                    })
+                    .addOnFailureListener(e -> {
+                        // TODO: Find a way to detect username or password is incorrect or both.
+                        Toast.makeText(getContext(), "Login Fail!!", Toast.LENGTH_SHORT).show();
+                        Log.println(Log.ERROR, "EXCEPTION", e.getMessage());
+                    });
         });
 
         return view;
