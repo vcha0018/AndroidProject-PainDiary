@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="0dp"
-    android:background="#fff"
+    android:background="@color/white"
     android:padding="30dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -220,9 +220,13 @@
 
         <Button
             android:id="@+id/btn_next_signup"
+            style="@style/Widget.MaterialComponents.Button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
+            android:elevation="5dp"
+            android:background="@color/black"
+            android:shadowColor="@color/grey_500"
             android:text="@string/button_next"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -230,10 +234,14 @@
 
         <Button
             android:id="@+id/btn_back"
+            style="@style/Widget.MaterialComponents.Button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:enabled="false"
+            android:elevation="5dp"
+            android:background="@color/black"
+            android:shadowColor="@color/grey_500"
             android:text="@string/button_back"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -246,6 +254,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="50dp"
             android:padding="0dp"
+            android:textColor="@color/teal_dark"
             android:text="@string/button_have_account"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"

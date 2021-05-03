@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="30dp">
+    android:padding="30dp"
+    android:background="@color/white">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -109,16 +110,20 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:padding="0dp"
+            android:textColor="@color/teal_dark"
             android:text="@string/button_forget_password"
             app:layout_constraintRight_toRightOf="@+id/input_layout_password"
             app:layout_constraintTop_toBottomOf="@+id/input_layout_password" />
 
         <Button
             android:id="@+id/btn_sign_in"
+            style="@style/Widget.MaterialComponents.Button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
             android:elevation="5dp"
+            android:background="@color/black"
+            android:shadowColor="@color/grey_500"
             android:text="@string/button_signin"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -148,7 +153,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toEndOf="@+id/text_create_account"
+                android:textColor="@color/teal_dark"
                 android:padding="0dp"
+                android:layout_marginLeft="5dp"
                 android:text="@string/button_create_account" />
 
         </RelativeLayout>
