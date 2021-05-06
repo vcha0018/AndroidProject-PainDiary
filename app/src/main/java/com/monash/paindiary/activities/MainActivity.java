@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.monash.paindiary.enums.FragmentEnums;
@@ -27,7 +28,19 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         getSupportActionBar().hide();
 
-        changeFragment(FragmentEnums.SIGNIN);
+//        changeFragment(FragmentEnums.SignIn);
+        byPassSignIn();
+    }
+
+    private void byPassSignIn() {
+        Intent intent = new Intent(this, AppActivity.class);
+        startActivity(intent);
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
     public void changeFragment(FragmentEnums replaceFragment) {
@@ -37,12 +50,12 @@ public class MainActivity extends AppCompatActivity {
             fragmentManager.popBackStack();
         } else {
             switch (replaceFragment) {
-                case SIGNIN:
-                    transaction.replace(binding.fragmentContainerView.getId(), signInFragment, FragmentEnums.SIGNIN.name());
+                case SignIn:
+                    transaction.replace(binding.fragmentContainerView.getId(), signInFragment, FragmentEnums.SignIn.name());
                     break;
-                case SIGNUP:
+                case SignUp:
                     transaction.setCustomAnimations(R.anim.slide_up, R.anim.fade_out, R.anim.fade_out, R.anim.slide_down);
-                    transaction.replace(binding.fragmentContainerView.getId(), signUpFragment, FragmentEnums.SIGNUP.name());
+                    transaction.replace(binding.fragmentContainerView.getId(), signUpFragment, FragmentEnums.SignUp.name());
                     transaction.addToBackStack(null);
                     break;
             }

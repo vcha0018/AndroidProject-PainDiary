@@ -1,11 +1,11 @@
 package com.monash.paindiary.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import android.os.Debug;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,11 +14,10 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.monash.paindiary.R;
+import com.monash.paindiary.activities.AppActivity;
 import com.monash.paindiary.activities.MainActivity;
 import com.monash.paindiary.databinding.FragmentSignInBinding;
 import com.monash.paindiary.enums.FragmentEnums;
-
-import java.io.Console;
 
 // TODO 1. Incorrect fields error messages
 // TODO 2. Background theme change
@@ -50,13 +49,16 @@ public class SignInFragment extends Fragment {
         View view = binding.getRoot();
 
         binding.btnCreateAccount.setOnClickListener(v -> {
-            ((MainActivity) getActivity()).changeFragment(FragmentEnums.SIGNUP);
+            ((MainActivity) getActivity()).changeFragment(FragmentEnums.SignUp);
         });
 
         binding.btnSignIn.setOnClickListener(v -> {
             auth.signInWithEmailAndPassword(binding.editEmail.getText().toString(), binding.editPassword.getText().toString())
                     .addOnSuccessListener(authResult -> {
                         Toast.makeText(getContext(), "Login Success!", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(getActivity(), AppActivity.class);
+                        startActivity(intent);
+                        getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                     })
                     .addOnFailureListener(e -> {
                         // TODO: Find a way to detect username or password is incorrect or both.

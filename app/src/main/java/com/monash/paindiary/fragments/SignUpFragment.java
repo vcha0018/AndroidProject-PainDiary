@@ -49,11 +49,11 @@ public class SignUpFragment extends Fragment {
         View view = binding.getRoot();
 
         binding.btnClose.setOnClickListener(v -> {
-            ((MainActivity) getActivity()).changeFragment(FragmentEnums.SIGNIN);
+            ((MainActivity) getActivity()).changeFragment(FragmentEnums.SignIn);
         });
 
         binding.btnSignIn.setOnClickListener(v -> {
-            ((MainActivity) getActivity()).changeFragment(FragmentEnums.SIGNIN);
+            ((MainActivity) getActivity()).changeFragment(FragmentEnums.SignIn);
         });
 
         binding.btnNextSignup.setOnClickListener(v -> {

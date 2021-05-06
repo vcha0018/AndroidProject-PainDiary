@@ -1,6 +1,10 @@
 package com.monash.paindiary.enums;
 
 public enum FragmentEnums {
-    SIGNIN,
-    SIGNUP
+    SignIn,
+    SignUp,
+    PainRecordView,
+    PainDataEntry,
+    ReportView,
+    MapView
 }

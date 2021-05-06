@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <item android:title="View">
+        <menu>
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/nav_pain_record_view_fragment"
+                    android:title="Pain Records" />
+                <item
+                    android:id="@+id/nav_report_view_fragment"
+                    android:title="Reports" />
+
+                <item
+                    android:id="@+id/nav_map_view_fragment"
+                    android:title="Map" />
+            </group>
+        </menu>
+    </item>
+
+    <item android:title="Add">
+        <menu>
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/nav_pain_data_entry_fragment"
+                    android:title="New Entry" />
+
+            </group>
+        </menu>
+    </item>
+</menu>
