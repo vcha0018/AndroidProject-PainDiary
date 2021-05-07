@@ -9,7 +9,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.monash.paindiary.activities.AppActivity;
 import com.monash.paindiary.databinding.FragmentReportViewBinding;
+import com.monash.paindiary.enums.NavigationItem;
 
 public class ReportViewFragment extends Fragment {
     private FragmentReportViewBinding binding;
@@ -21,6 +23,7 @@ public class ReportViewFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentReportViewBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
+        ((AppActivity) requireActivity()).ManualSelectNavigationItem(NavigationItem.ReportView);
 //        return super.onCreateView(inflater, container, savedInstanceState);
 
         return view;

@@ -12,7 +12,11 @@ import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
 
 import com.monash.paindiary.R;
+import com.monash.paindiary.activities.AppActivity;
 import com.monash.paindiary.databinding.FragmentPainRecordviewBinding;
+import com.monash.paindiary.enums.NavigationItem;
+
+import java.util.Objects;
 
 public class PainRecordViewFragment extends Fragment {
     private FragmentPainRecordviewBinding binding;
@@ -25,6 +29,7 @@ public class PainRecordViewFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentPainRecordviewBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
+        ((AppActivity) requireActivity()).ManualSelectNavigationItem(NavigationItem.RecordView);
 //        return super.onCreateView(inflater, container, savedInstanceState);
 
         binding.btnCreateNewEntry.setOnClickListener(v -> {

@@ -5,16 +5,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="0dp"
-    android:background="@color/white"
-    android:padding="30dp">
+    android:background="@color/white">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:padding="20dp">
 
         <TextView
-            style="@style/Theme.PainDiary.DataEntryTextHeader"
             android:id="@+id/text_pain_intensity"
+            style="@style/Theme.PainDiary.DataEntryTextHeader"
             android:text="Pain Intensity"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -34,8 +34,8 @@
             android:id="@+id/text_slider_high"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="37dp"
             android:layout_marginTop="10dp"
+            android:layout_marginEnd="37dp"
             android:text="High"
             android:textColor="@color/grey_800"
             app:layout_constraintRight_toRightOf="parent"
@@ -45,8 +45,8 @@
             android:id="@+id/slider_intensity_level"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="25dp"
             android:layout_marginTop="20dp"
+            android:layout_marginEnd="25dp"
             android:stepSize="1"
             android:value="4"
             android:valueFrom="0"
@@ -65,8 +65,8 @@
             app:layout_constraintTop_toBottomOf="@+id/text_slider_high" />
 
         <TextView
-            style="@style/Theme.PainDiary.DataEntryTextHeader"
             android:id="@+id/text_location"
+            style="@style/Theme.PainDiary.DataEntryTextHeader"
             android:layout_marginTop="0dp"
             android:text="Pain area"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -76,8 +76,8 @@
             android:id="@+id/pain_area_chip_group"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintLeft_toLeftOf="parent"
             android:layout_marginTop="10dp"
+            app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@id/text_location"
             app:singleSelection="true">
 
@@ -172,8 +172,8 @@
         </com.google.android.material.chip.ChipGroup>
 
         <TextView
-            style="@style/Theme.PainDiary.DataEntryTextHeader"
             android:id="@+id/text_mood"
+            style="@style/Theme.PainDiary.DataEntryTextHeader"
             android:text="Mood"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/pain_area_chip_group" />
@@ -182,12 +182,12 @@
             android:id="@+id/mood_button_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:orientation="vertical"
+            android:weightSum="2"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            android:layout_marginTop="10dp"
-            app:layout_constraintTop_toBottomOf="@+id/text_mood"
-            android:weightSum="2">
+            app:layout_constraintTop_toBottomOf="@+id/text_mood">
 
             <LinearLayout
                 style="@style/Theme.PainDiary.LinearLayoutButtons"
@@ -196,16 +196,19 @@
                 <Button
                     style="@style/Theme.PainDiary.ImageTextButton"
                     android:drawableTop="@drawable/ic_baseline_very_low_24"
-                    android:text="very low"/>
+                    android:tooltipText="very low mood"
+                    android:text="very low" />
 
                 <Button
                     style="@style/Theme.PainDiary.ImageTextButton"
                     android:drawableTop="@drawable/ic_baseline_low_24"
-                    android:text="low"/>
+                    android:tooltipText="low mood"
+                    android:text="low" />
 
                 <Button
                     style="@style/Theme.PainDiary.ImageTextButton"
                     android:drawableTop="@drawable/ic_baseline_average_24"
+                    android:tooltipText="average mood"
                     android:text="average" />
             </LinearLayout>
 
@@ -216,24 +219,87 @@
                 <Button
                     style="@style/Theme.PainDiary.ImageTextButton"
                     android:drawableTop="@drawable/ic_baseline_good_24"
+                    android:tooltipText="good mood"
                     android:text="good" />
 
                 <Button
                     style="@style/Theme.PainDiary.ImageTextButton"
                     android:drawableTop="@drawable/ic_round_very_good_24"
+                    android:tooltipText="very good mood"
                     android:text="very good" />
             </LinearLayout>
         </LinearLayout>
 
         <TextView
-            style="@style/Theme.PainDiary.DataEntryTextHeader"
             android:id="@+id/text_goal"
+            style="@style/Theme.PainDiary.DataEntryTextHeader"
+            android:layout_marginTop="5dp"
             android:text="Goal"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/mood_button_layout" />
 
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/input_layout_step_count"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/text_goal"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginTop="10dp"
+            android:hint="Step Count"
+            android:textColorHint="@color/black"
+            app:boxStrokeColor="@color/black"
+            app:boxStrokeErrorColor="@android:color/holo_red_light"
+            app:boxStrokeWidthFocused="2dp"
+            app:endIconMode="clear_text"
+            app:endIconTint="@color/black"
+            app:hintTextColor="@color/black"
+            app:startIconTint="@color/black">
 
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edit_step_count"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:tooltipText="Enter step count"
+                android:text="10000"
+                android:textColor="@color/black"
+                android:textCursorDrawable="@null" />
+        </com.google.android.material.textfield.TextInputLayout>
 
+        <LinearLayout
+            android:id="@+id/control_btn_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="20dp"
+            android:weightSum="3"
+            android:gravity="top|right"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/input_layout_step_count">
+
+            <Button
+                style="@style/Widget.MaterialComponents.Button"
+                android:id="@+id/btn_save"
+                android:layout_weight="2"
+                android:padding="0dp"
+                android:layout_marginEnd="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:tooltipText="Save Changes"
+                android:text="SAVE"/>
+
+            <Button
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:id="@+id/btn_edit"
+                android:layout_weight="1"
+                android:padding="0dp"
+                android:layout_marginStart="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:tooltipText="Edit Changes"
+                android:text="EDIT"/>
+        </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
 
