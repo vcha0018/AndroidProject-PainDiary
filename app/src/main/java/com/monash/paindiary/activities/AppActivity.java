@@ -1,8 +1,11 @@
 package com.monash.paindiary.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
@@ -12,6 +15,10 @@ import android.os.Bundle;
 import com.monash.paindiary.R;
 import com.monash.paindiary.databinding.ActivityAppBinding;
 import com.monash.paindiary.enums.FragmentEnums;
+import com.monash.paindiary.fragments.MapViewFragment;
+import com.monash.paindiary.fragments.PainDataEntryFragment;
+import com.monash.paindiary.fragments.PainRecordViewFragment;
+import com.monash.paindiary.fragments.ReportViewFragment;
 
 public class AppActivity extends AppCompatActivity {
     private ActivityAppBinding binding;
@@ -19,6 +26,11 @@ public class AppActivity extends AppCompatActivity {
     private FragmentManager fragmentManager = getSupportFragmentManager();
     private NavHostFragment navHostFragment;
     private NavController navController;
+
+//    private static PainRecordViewFragment painRecordViewFragment;
+//    private static PainDataEntryFragment painDataEntryFragment;
+//    private static ReportViewFragment reportViewFragment;
+//    private static MapViewFragment mapViewFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

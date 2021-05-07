@@ -8,13 +8,17 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavOptions;
+import androidx.navigation.Navigation;
 
+import com.monash.paindiary.R;
 import com.monash.paindiary.databinding.FragmentPainRecordviewBinding;
 
 public class PainRecordViewFragment extends Fragment {
     private FragmentPainRecordviewBinding binding;
 
-    public PainRecordViewFragment () {}
+    public PainRecordViewFragment() {
+    }
 
     @Nullable
     @Override
@@ -22,6 +26,16 @@ public class PainRecordViewFragment extends Fragment {
         binding = FragmentPainRecordviewBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
 //        return super.onCreateView(inflater, container, savedInstanceState);
+
+        binding.btnCreateNewEntry.setOnClickListener(v -> {
+            Navigation.findNavController(view).navigate(
+                    R.id.nav_pain_data_entry_fragment,
+                    null,
+                    new NavOptions.Builder()
+                            .setEnterAnim(R.anim.slide_up)
+                            .setExitAnim(R.anim.slide_down)
+                            .build());
+        });
 
         return view;
     }

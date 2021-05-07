@@ -1,6 +1,239 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:layout_margin="0dp"
+    android:background="@color/white"
+    android:padding="30dp">
 
-</LinearLayout>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            style="@style/Theme.PainDiary.DataEntryTextHeader"
+            android:id="@+id/text_pain_intensity"
+            android:text="Pain Intensity"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/text_slider_low"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="10dp"
+            android:text="Low"
+            android:textColor="@color/grey_800"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/text_pain_intensity" />
+
+        <TextView
+            android:id="@+id/text_slider_high"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="37dp"
+            android:layout_marginTop="10dp"
+            android:text="High"
+            android:textColor="@color/grey_800"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/text_pain_intensity" />
+
+        <com.google.android.material.slider.Slider
+            android:id="@+id/slider_intensity_level"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="25dp"
+            android:layout_marginTop="20dp"
+            android:stepSize="1"
+            android:value="4"
+            android:valueFrom="0"
+            android:valueTo="10"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/text_pain_intensity" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="2dp"
+            android:layout_marginTop="4dp"
+            android:text="10"
+            android:textColor="@color/teal_theme_dark"
+            app:layout_constraintLeft_toRightOf="@+id/slider_intensity_level"
+            app:layout_constraintTop_toBottomOf="@+id/text_slider_high" />
+
+        <TextView
+            style="@style/Theme.PainDiary.DataEntryTextHeader"
+            android:id="@+id/text_location"
+            android:layout_marginTop="0dp"
+            android:text="Pain area"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/slider_intensity_level" />
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/pain_area_chip_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginTop="10dp"
+            app:layout_constraintTop_toBottomOf="@id/text_location"
+            app:singleSelection="true">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/head_chip"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:text="head" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/neck_chip"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="neck" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/back_chip"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:text="back" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/shoulder_chip"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:text="shoulder" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/facial_chip"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:text="facial" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/jaw_chip"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:text="jaw" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/shins_chip"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:text="shins" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/elbows_chip"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:text="elbows" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/abdomen_chip"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:text="abdomen" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/hips_chip"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:text="hips" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/knees_chip"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:text="knees" />
+
+        </com.google.android.material.chip.ChipGroup>
+
+        <TextView
+            style="@style/Theme.PainDiary.DataEntryTextHeader"
+            android:id="@+id/text_mood"
+            android:text="Mood"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/pain_area_chip_group" />
+
+        <LinearLayout
+            android:id="@+id/mood_button_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginTop="10dp"
+            app:layout_constraintTop_toBottomOf="@+id/text_mood"
+            android:weightSum="2">
+
+            <LinearLayout
+                style="@style/Theme.PainDiary.LinearLayoutButtons"
+                android:weightSum="3">
+
+                <Button
+                    style="@style/Theme.PainDiary.ImageTextButton"
+                    android:drawableTop="@drawable/ic_baseline_very_low_24"
+                    android:text="very low"/>
+
+                <Button
+                    style="@style/Theme.PainDiary.ImageTextButton"
+                    android:drawableTop="@drawable/ic_baseline_low_24"
+                    android:text="low"/>
+
+                <Button
+                    style="@style/Theme.PainDiary.ImageTextButton"
+                    android:drawableTop="@drawable/ic_baseline_average_24"
+                    android:text="average" />
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/Theme.PainDiary.LinearLayoutButtons"
+                android:weightSum="6">
+
+                <Button
+                    style="@style/Theme.PainDiary.ImageTextButton"
+                    android:drawableTop="@drawable/ic_baseline_good_24"
+                    android:text="good" />
+
+                <Button
+                    style="@style/Theme.PainDiary.ImageTextButton"
+                    android:drawableTop="@drawable/ic_round_very_good_24"
+                    android:text="very good" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <TextView
+            style="@style/Theme.PainDiary.DataEntryTextHeader"
+            android:id="@+id/text_goal"
+            android:text="Goal"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/mood_button_layout" />
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
+

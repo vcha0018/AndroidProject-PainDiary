@@ -254,7 +254,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="50dp"
             android:padding="0dp"
-            android:textColor="@color/teal_dark"
+            android:textColor="@color/teal_theme_dark"
             android:text="@string/button_have_account"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
