@@ -32,11 +32,6 @@ public class AppActivity extends AppCompatActivity {
     private NavHostFragment navHostFragment;
     private NavController navController;
 
-//    private static PainRecordViewFragment painRecordViewFragment;
-//    private static PainDataEntryFragment painDataEntryFragment;
-//    private static ReportViewFragment reportViewFragment;
-//    private static MapViewFragment mapViewFragment;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
