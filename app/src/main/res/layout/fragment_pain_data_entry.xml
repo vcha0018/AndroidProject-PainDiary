@@ -182,53 +182,125 @@
             android:id="@+id/mood_button_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:orientation="vertical"
-            android:weightSum="2"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/text_mood">
+            app:layout_constraintTop_toBottomOf="@+id/text_mood"
+            android:orientation="vertical">
 
-            <LinearLayout
-                style="@style/Theme.PainDiary.LinearLayoutButtons"
-                android:weightSum="3">
+            <com.google.android.material.button.MaterialButtonToggleGroup
+                android:id="@+id/btnMoodGroup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:singleSelection="true"
+                app:selectionRequired="true">
 
                 <Button
-                    style="@style/Theme.PainDiary.ImageTextButton"
+                    android:id="@+id/btnMoodVeryLow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:drawableTop="@drawable/ic_baseline_very_low_24"
-                    android:tooltipText="very low mood"
-                    android:text="very low" />
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:text="VERY LOW"
+                    android:tooltipText="very low mood" />
 
                 <Button
-                    style="@style/Theme.PainDiary.ImageTextButton"
+                    android:id="@+id/btnMoodLow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:drawableTop="@drawable/ic_baseline_low_24"
-                    android:tooltipText="low mood"
-                    android:text="low" />
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:text="LOW"
+                    android:tooltipText="low mood" />
 
                 <Button
-                    style="@style/Theme.PainDiary.ImageTextButton"
+                    android:id="@+id/btnMoodAverage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:drawableTop="@drawable/ic_baseline_average_24"
-                    android:tooltipText="average mood"
-                    android:text="average" />
-            </LinearLayout>
-
-            <LinearLayout
-                style="@style/Theme.PainDiary.LinearLayoutButtons"
-                android:weightSum="6">
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:text="AVERAGE"
+                    android:tooltipText="average mood" />
 
                 <Button
-                    style="@style/Theme.PainDiary.ImageTextButton"
-                    android:drawableTop="@drawable/ic_baseline_good_24"
-                    android:tooltipText="good mood"
-                    android:text="good" />
+                    android:id="@+id/btnMoodGood"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableTop="@drawable/ic_baseline_average_24"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:text="GOOD"
+                    android:tooltipText="good mood" />
 
                 <Button
-                    style="@style/Theme.PainDiary.ImageTextButton"
-                    android:drawableTop="@drawable/ic_round_very_good_24"
-                    android:tooltipText="very good mood"
-                    android:text="very good" />
-            </LinearLayout>
+                    android:id="@+id/btnMoodVeryGood"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableTop="@drawable/ic_baseline_average_24"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:text="VERY GOOD"
+                    android:tooltipText="very good mood" />
+            </com.google.android.material.button.MaterialButtonToggleGroup>
         </LinearLayout>
+
+<!--        <LinearLayout-->
+<!--            android:id="@+id/mood_button_layout"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="10dp"-->
+<!--            android:orientation="vertical"-->
+<!--            app:layout_constraintLeft_toLeftOf="parent"-->
+<!--            app:layout_constraintRight_toRightOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/text_mood">-->
+
+<!--            <com.google.android.material.button.MaterialButtonToggleGroup-->
+<!--                android:id="@+id/btnMoodGroup"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:orientation="horizontal"-->
+<!--                app:singleSelection="true"-->
+<!--                app:selectionRequired="true">-->
+
+<!--                <Button-->
+<!--                    android:id="@+id/btnMoodVeryLow"-->
+<!--                    app:icon="@drawable/ic_baseline_very_low_24"-->
+<!--                    style="@style/Widget.App.Button.OutlinedButton.IconOnly"-->
+<!--                    android:tooltipText="very low mood" />-->
+
+<!--                <Button-->
+<!--                    android:id="@+id/btnMoodLow"-->
+<!--                    app:icon="@drawable/ic_baseline_very_low_24"-->
+<!--                    style="@style/Widget.App.Button.OutlinedButton.IconOnly"-->
+<!--                    android:tooltipText="low mood" />-->
+
+<!--&lt;!&ndash;                <com.google.android.material.button.MaterialButton&ndash;&gt;-->
+<!--&lt;!&ndash;                    android:id="@+id/btnMoodLow"&ndash;&gt;-->
+<!--&lt;!&ndash;                    style="@style/Theme.PainDiary.ImageTextButton"&ndash;&gt;-->
+<!--&lt;!&ndash;                    android:drawableTop="@drawable/ic_baseline_low_24"&ndash;&gt;-->
+<!--&lt;!&ndash;                    android:text="low"&ndash;&gt;-->
+<!--&lt;!&ndash;                    android:tooltipText="low mood" />&ndash;&gt;-->
+
+<!--&lt;!&ndash;                <com.google.android.material.button.MaterialButton&ndash;&gt;-->
+<!--&lt;!&ndash;                    android:id="@+id/btnMoodAverage"&ndash;&gt;-->
+<!--&lt;!&ndash;                    style="@style/Theme.PainDiary.ImageTextButton"&ndash;&gt;-->
+<!--&lt;!&ndash;                    android:drawableTop="@drawable/ic_baseline_average_24"&ndash;&gt;-->
+<!--&lt;!&ndash;                    android:text="average"&ndash;&gt;-->
+<!--&lt;!&ndash;                    android:tooltipText="average mood" />&ndash;&gt;-->
+
+<!--&lt;!&ndash;                <com.google.android.material.button.MaterialButton&ndash;&gt;-->
+<!--&lt;!&ndash;                    android:id="@+id/btnMoodGood"&ndash;&gt;-->
+<!--&lt;!&ndash;                    style="@style/Theme.PainDiary.ImageTextButton"&ndash;&gt;-->
+<!--&lt;!&ndash;                    android:drawableTop="@drawable/ic_baseline_good_24"&ndash;&gt;-->
+<!--&lt;!&ndash;                    android:text="good"&ndash;&gt;-->
+<!--&lt;!&ndash;                    android:tooltipText="good mood" />&ndash;&gt;-->
+
+<!--&lt;!&ndash;                <com.google.android.material.button.MaterialButton&ndash;&gt;-->
+<!--&lt;!&ndash;                    android:id="@+id/btnMoodVeryGood"&ndash;&gt;-->
+<!--&lt;!&ndash;                    style="@style/Theme.PainDiary.ImageTextButton"&ndash;&gt;-->
+<!--&lt;!&ndash;                    android:drawableTop="@drawable/ic_round_very_good_24"&ndash;&gt;-->
+<!--&lt;!&ndash;                    android:text="very good"&ndash;&gt;-->
+<!--&lt;!&ndash;                    android:tooltipText="very good mood" />&ndash;&gt;-->
+<!--            </com.google.android.material.button.MaterialButtonToggleGroup>-->
+<!--        </LinearLayout>-->
 
         <TextView
             android:id="@+id/text_goal"
@@ -243,8 +315,6 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/text_goal"
-            app:layout_constraintLeft_toLeftOf="parent"
             android:layout_marginTop="10dp"
             android:hint="Step Count"
             android:textColorHint="@color/black"
@@ -254,6 +324,8 @@
             app:endIconMode="clear_text"
             app:endIconTint="@color/black"
             app:hintTextColor="@color/black"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/text_goal"
             app:startIconTint="@color/black">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -261,44 +333,44 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="number"
-                android:tooltipText="Enter step count"
                 android:text="10000"
                 android:textColor="@color/black"
-                android:textCursorDrawable="@null" />
+                android:textCursorDrawable="@null"
+                android:tooltipText="Enter step count" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <LinearLayout
             android:id="@+id/control_btn_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:layout_marginTop="20dp"
-            android:weightSum="3"
             android:gravity="top|right"
+            android:orientation="horizontal"
+            android:weightSum="3"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/input_layout_step_count">
 
             <Button
-                style="@style/Widget.MaterialComponents.Button"
                 android:id="@+id/btn_save"
+                style="@style/Widget.MaterialComponents.Button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
                 android:layout_weight="2"
                 android:padding="0dp"
-                android:layout_marginEnd="5dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:tooltipText="Save Changes"
-                android:text="SAVE"/>
+                android:text="SAVE"
+                android:tooltipText="Save Changes" />
 
             <Button
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:id="@+id/btn_edit"
-                android:layout_weight="1"
-                android:padding="0dp"
-                android:layout_marginStart="5dp"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:tooltipText="Edit Changes"
-                android:text="EDIT"/>
+                android:layout_marginStart="5dp"
+                android:layout_weight="1"
+                android:padding="0dp"
+                android:text="EDIT"
+                android:tooltipText="Edit Changes" />
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

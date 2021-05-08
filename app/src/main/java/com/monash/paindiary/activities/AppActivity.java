@@ -5,25 +5,35 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.google.android.material.navigation.NavigationView;
 import com.monash.paindiary.R;
+import com.monash.paindiary.adapter.RecyclerViewAdapter;
 import com.monash.paindiary.databinding.ActivityAppBinding;
+import com.monash.paindiary.entity.PainRecord;
 import com.monash.paindiary.enums.FragmentEnums;
 import com.monash.paindiary.enums.NavigationItem;
 import com.monash.paindiary.fragments.MapViewFragment;
 import com.monash.paindiary.fragments.PainDataEntryFragment;
 import com.monash.paindiary.fragments.PainRecordViewFragment;
 import com.monash.paindiary.fragments.ReportViewFragment;
+import com.monash.paindiary.viewmodel.PainRecordViewModel;
+
+import java.util.List;
 
 public class AppActivity extends AppCompatActivity {
     private ActivityAppBinding binding;
@@ -31,6 +41,9 @@ public class AppActivity extends AppCompatActivity {
     private FragmentManager fragmentManager = getSupportFragmentManager();
     private NavHostFragment navHostFragment;
     private NavController navController;
+
+    private RecyclerView.LayoutManager layoutManager;
+    private PainRecordViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +55,7 @@ public class AppActivity extends AppCompatActivity {
         setSupportActionBar(binding.appBar.toolbar);
         appBarConfiguration = new AppBarConfiguration
                 .Builder(
+                R.id.nav_home_fragment,
                 R.id.nav_pain_record_view_fragment,
                 R.id.nav_pain_data_entry_fragment,
                 R.id.nav_report_view_fragment,
@@ -55,14 +69,15 @@ public class AppActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(binding.navView, navController);
         //Sets up a Toolbar for use with a NavController.
         NavigationUI.setupWithNavController(binding.appBar.toolbar, navController, appBarConfiguration);
-
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
         });
-
     }
 
     public void ManualSelectNavigationItem(@NonNull NavigationItem navigationItem) {
         switch (navigationItem) {
+            case HomeView:
+                binding.navView.setCheckedItem(R.id.nav_home_fragment);
+                break;
             case RecordView:
                 binding.navView.setCheckedItem(R.id.nav_pain_record_view_fragment);
                 break;
@@ -80,7 +95,7 @@ public class AppActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (navController.getCurrentDestination().getId() == R.id.nav_pain_record_view_fragment) {
+        if (navController.getCurrentDestination().getId() == R.id.nav_home_fragment) {
             finishAffinity();
         }
         super.onBackPressed();
