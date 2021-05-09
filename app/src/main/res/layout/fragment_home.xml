@@ -48,7 +48,7 @@
             app:layout_constraintTop_toBottomOf="@+id/text_temperature"
             app:layout_constraintLeft_toLeftOf="parent"
             android:textColor="@color/black"
-            android:text="Vivek"/>
+            android:text="Humidity"/>
 
         <TextView
             android:id="@+id/text_pressure"
