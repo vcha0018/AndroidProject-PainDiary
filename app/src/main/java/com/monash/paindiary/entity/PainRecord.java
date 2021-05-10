@@ -97,6 +97,10 @@ public class PainRecord {
         return pressure;
     }
 
+    public void setUid(int uid) {
+        this.uid = uid;
+    }
+
     public void setUserEmail(@NonNull String userEmail) {
         this.userEmail = userEmail;
     }

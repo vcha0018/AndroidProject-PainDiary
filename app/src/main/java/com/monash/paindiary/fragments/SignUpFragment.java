@@ -20,6 +20,7 @@ import com.monash.paindiary.enums.FragmentEnums;
 // TODO 1. Incorrect fields error messages
 // TODO 2. Background theme change
 // TODO 3. Find a way to store user data currently firebase support only email and password.
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link SignUpFragment} factory method to
@@ -48,70 +49,13 @@ public class SignUpFragment extends Fragment {
         binding = FragmentSignUpBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
 
-        binding.btnClose.setOnClickListener(v -> {
-            ((MainActivity) getActivity()).changeFragment(FragmentEnums.SignIn);
-        });
+        binding.btnClose.setOnClickListener(v ->
+                ((MainActivity) getActivity()).changeFragment(FragmentEnums.SignIn));
 
-        binding.btnSignIn.setOnClickListener(v -> {
-            ((MainActivity) getActivity()).changeFragment(FragmentEnums.SignIn);
-        });
+        binding.btnSignIn.setOnClickListener(v ->
+                ((MainActivity) getActivity()).changeFragment(FragmentEnums.SignIn));
 
-        binding.btnNextSignup.setOnClickListener(v -> {
-            if (binding.btnNextSignup.getText().equals("NEXT")) {
-                binding.btnNextSignup.setText(R.string.button_signup);
-                binding.btnBack.setEnabled(true);
-                binding.viewFlipper.setInAnimation(getContext(), R.anim.slide_in_right);
-                binding.viewFlipper.setOutAnimation(getContext(), R.anim.slide_out_left);
-                binding.viewFlipper.showNext();
-            } else {
-                auth.createUserWithEmailAndPassword(binding.editEmail.getText().toString(), binding.editCreatePassword.getText().toString())
-                        .addOnCompleteListener(task -> {
-                            if (task.isSuccessful()) {
-                                Toast.makeText(getContext(), "New user created!", Toast.LENGTH_SHORT).show();
-                            } else {
-                                Toast.makeText(getContext(), "Fail to create new user", Toast.LENGTH_SHORT).show();
-                                Log.d("MESSAGE FROM FIREBASE", task.getResult().toString());
-                            }
-                        })
-                        .addOnFailureListener(e -> {
-                            Toast.makeText(getContext(), "Login Fail!!", Toast.LENGTH_SHORT).show();
-                            Log.println(Log.ERROR, "EXCEPTION", e.getMessage());
-                        });
-            }
-
-        });
-
-        binding.btnBack.setOnClickListener(v -> {
-            binding.btnNextSignup.setText(R.string.button_next);
-            binding.btnBack.setEnabled(false);
-            binding.viewFlipper.setInAnimation(getContext(), R.anim.slide_in_left);
-            binding.viewFlipper.setOutAnimation(getContext(), R.anim.slide_out_right);
-            binding.viewFlipper.showPrevious();
-        });
-
-        binding.editEmail.setOnFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus) {
-                binding.editEmail.setHint("abc@xyz.com");
-            } else {
-                binding.editEmail.setHint("");
-            }
-        });
-
-        binding.editBirthDate.setOnFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus) {
-                binding.editBirthDate.setHint("dd/mm/yyyy");
-            } else {
-                binding.editBirthDate.setHint("");
-            }
-        });
-
-        binding.editPhoneNumber.setOnFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus) {
-                binding.editPhoneNumber.setHint("+61000000000");
-            } else {
-                binding.editPhoneNumber.setHint("");
-            }
-        });
+        binding.btnSignup.setOnClickListener(this::btnSignUpOnClick);
 
         return view;
     }
@@ -120,5 +64,22 @@ public class SignUpFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    private void btnSignUpOnClick(View view) {
+        auth.createUserWithEmailAndPassword(binding.editEmail.getText().toString(), binding.editCreatePassword.getText().toString())
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Toast.makeText(getContext(), "New user created!", Toast.LENGTH_SHORT).show();
+                        ((MainActivity) getActivity()).changeFragment(FragmentEnums.SignIn);
+                    } else {
+                        Toast.makeText(getContext(), "Fail to create new user", Toast.LENGTH_SHORT).show();
+                        Log.d("MESSAGE FROM FIREBASE", task.getResult().toString());
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(getContext(), "Login Fail!!", Toast.LENGTH_SHORT).show();
+                    Log.println(Log.ERROR, "EXCEPTION", e.getMessage());
+                });
     }
 }

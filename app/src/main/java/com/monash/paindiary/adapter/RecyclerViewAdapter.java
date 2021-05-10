@@ -1,6 +1,7 @@
 package com.monash.paindiary.adapter;
 
 import android.app.Activity;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,8 +9,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.navigation.NavOptions;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.monash.paindiary.R;
 import com.monash.paindiary.databinding.LayoutPainRecordBinding;
 import com.monash.paindiary.entity.PainRecord;
 
@@ -35,6 +39,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @Override
     public void onBindViewHolder(@NonNull RecyclerViewAdapter.ViewHolder viewHolder, int position) {
         final PainRecord painRecord = painRecordList.get(position);
+        viewHolder.binding.textHiddenRecordId.setText(String.valueOf(painRecord.getUid()));
         viewHolder.binding.textEntryDate.setText((new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss")).format(new Date(painRecord.getDateTime())));
         viewHolder.binding.painIntensityValue.setText(String.valueOf(painRecord.getPainIntensityLevel()));
         viewHolder.binding.painAreaValue.setText(painRecord.getPainArea());
@@ -44,6 +49,21 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         viewHolder.binding.temperatureValue.setText(String.valueOf(painRecord.getTemperature()));
         viewHolder.binding.humidityValue.setText(String.valueOf(painRecord.getHumidity()));
         viewHolder.binding.pressureValue.setText(String.valueOf(painRecord.getPressure()));
+
+        viewHolder.itemView.setOnClickListener(v -> {
+            int uid = Integer.parseInt(((TextView) v.findViewById(R.id.text_hidden_record_id)).getText().toString());
+            Bundle bundle = new Bundle();
+            bundle.putInt("uid", uid);
+            Navigation.findNavController(v).navigate(
+                    R.id.nav_pain_data_entry_fragment,
+                    bundle,
+                    new NavOptions.Builder()
+                            .setEnterAnim(R.anim.slide_up)
+                            .setExitAnim(R.anim.fade_out)
+                            .setPopExitAnim(R.anim.slide_down)
+                            .build()
+            );
+        });
     }
 
     @Override

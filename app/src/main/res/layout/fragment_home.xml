@@ -1,64 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_margin="0dp"
-    android:background="@color/white">
+    android:layout_height="match_parent">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <ScrollView
         android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="0dp"
+        android:background="@color/white">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="20dp">
+
+            <TextView
+                android:id="@+id/text_welcome"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                android:textColor="@color/black"
+                android:textAppearance="?attr/textAppearanceHeadline6"
+                android:text="WELCOME,"/>
+
+            <TextView
+                android:id="@+id/text_username"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/text_welcome"
+                app:layout_constraintLeft_toLeftOf="parent"
+                android:textColor="@color/black"
+                android:textAppearance="?attr/textAppearanceHeadline4"
+                android:text="Vivek"/>
+
+            <TextView
+                android:id="@+id/text_temperature"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/text_username"
+                app:layout_constraintLeft_toLeftOf="parent"
+                android:textColor="@color/black"
+                android:text="Temperature"/>
+
+            <TextView
+                android:id="@+id/text_humidity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/text_temperature"
+                app:layout_constraintLeft_toLeftOf="parent"
+                android:textColor="@color/black"
+                android:text="Humidity"/>
+
+            <TextView
+                android:id="@+id/text_pressure"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/text_humidity"
+                app:layout_constraintLeft_toLeftOf="parent"
+                android:textColor="@color/black"
+                android:text="Pressure"/>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btn_create_new_entry"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="20dp">
-
-        <TextView
-            android:id="@+id/text_welcome"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            android:textColor="@color/black"
-            android:textAppearance="?attr/textAppearanceHeadline6"
-            android:text="WELCOME,"/>
-
-        <TextView
-            android:id="@+id/text_username"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/text_welcome"
-            app:layout_constraintLeft_toLeftOf="parent"
-            android:textColor="@color/black"
-            android:textAppearance="?attr/textAppearanceHeadline4"
-            android:text="Vivek"/>
-
-        <TextView
-            android:id="@+id/text_temperature"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/text_username"
-            app:layout_constraintLeft_toLeftOf="parent"
-            android:textColor="@color/black"
-            android:text="Temperature"/>
-
-        <TextView
-            android:id="@+id/text_humidity"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/text_temperature"
-            app:layout_constraintLeft_toLeftOf="parent"
-            android:textColor="@color/black"
-            android:text="Humidity"/>
-
-        <TextView
-            android:id="@+id/text_pressure"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/text_humidity"
-            app:layout_constraintLeft_toLeftOf="parent"
-            android:textColor="@color/black"
-            android:text="Pressure"/>
-
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</ScrollView>
+        android:layout_gravity="bottom|right"
+        android:layout_margin="20dp"
+        android:src="@drawable/ic_baseline_add_24"
+        android:contentDescription="ADD ENTRY" />
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

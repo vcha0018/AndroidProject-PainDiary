@@ -18,6 +18,7 @@ import com.monash.paindiary.activities.AppActivity;
 import com.monash.paindiary.activities.MainActivity;
 import com.monash.paindiary.databinding.FragmentSignInBinding;
 import com.monash.paindiary.enums.FragmentEnums;
+import com.monash.paindiary.helper.UserInfo;
 
 // TODO 1. Incorrect fields error messages
 // TODO 2. Background theme change
@@ -56,6 +57,7 @@ public class SignInFragment extends Fragment {
             auth.signInWithEmailAndPassword(binding.editEmail.getText().toString(), binding.editPassword.getText().toString())
                     .addOnSuccessListener(authResult -> {
                         Toast.makeText(getContext(), "Login Success!", Toast.LENGTH_SHORT).show();
+                        UserInfo.setINSTANCE(binding.editEmail.getText().toString(), binding.editPassword.getText().toString(), true);
                         Intent intent = new Intent(getActivity(), AppActivity.class);
                         startActivity(intent);
                         getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
