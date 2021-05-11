@@ -19,4 +19,7 @@
     <string name="button_have_account">I already have an account</string>
     <string name="button_signup">SignUp</string>
 
+    <string name="mapbox_public_access_token">pk.eyJ1Ijoidml2ZWtjaGF1ZGhhcmkxOTE0IiwiYSI6ImNrb2pyY29pcjAyengzMW84emY5c29zZGEifQ._JeArQotjzyFlgHscOCDiw</string>
+    <string name="enter_address">Enter address</string>
+    <string name="locate">locate</string>
 </resources>

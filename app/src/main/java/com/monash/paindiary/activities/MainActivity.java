@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
-        getSupportActionBar().hide();
+//        getSupportActionBar().hide();
 
 //        changeFragment(FragmentEnums.SignIn);
         byPassSignIn();

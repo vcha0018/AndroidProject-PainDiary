@@ -24,4 +24,5 @@
             android:text="Weather"/>
     </com.google.android.material.tabs.TabLayout>
 
+
 </LinearLayout>
