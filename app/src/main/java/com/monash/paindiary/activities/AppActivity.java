@@ -86,8 +86,9 @@ public class AppActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(binding.navView, navController);
         //Sets up a Toolbar for use with a NavController.
         NavigationUI.setupWithNavController(binding.appBar.toolbar, navController, appBarConfiguration);
-//        navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
-//        });
+        navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
+
+        });
 
     }
 

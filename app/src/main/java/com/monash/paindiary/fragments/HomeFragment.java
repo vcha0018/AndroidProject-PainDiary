@@ -45,9 +45,14 @@ public class HomeFragment extends Fragment {
 
         binding.btnCreateNewEntry.setOnClickListener(this::btnCreateNewEntryOnClicked);
 
-        setWeatherData(false);
-
         return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        setWeatherData(false);
     }
 
     @Override
@@ -81,7 +86,7 @@ public class HomeFragment extends Fragment {
             weatherResponseCallAsync.enqueue(new Callback<WeatherResponse>() {
                 @Override
                 public void onResponse(Call<WeatherResponse> call, Response<WeatherResponse> response) {
-                    if (response.isSuccessful()) {
+                    if (response.isSuccessful() && response.body() != null) {
                         WeatherInfo.setInstance(
                                 response.body().getMain().getTemp(),
                                 response.body().getMain().getHumidity(),

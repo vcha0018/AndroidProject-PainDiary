@@ -30,7 +30,7 @@ public class PainRecordViewModel extends AndroidViewModel {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public CompletableFuture<PainRecord> findRecordByID(final double timestamp) {
+    public CompletableFuture<PainRecord> findRecordByTimestamp(final double timestamp) {
         return repository.findByTimestamp(timestamp);
     }
 
