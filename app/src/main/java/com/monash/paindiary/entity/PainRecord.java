@@ -5,7 +5,7 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-@Entity (tableName = "PAINRECORD")
+@Entity(tableName = "PAINRECORD")
 public class PainRecord {
     @PrimaryKey(autoGenerate = true)
     public int uid;
@@ -28,6 +28,9 @@ public class PainRecord {
     @NonNull
     public String mood;
 
+    @ColumnInfo(name = "goal")
+    public long goal;
+
     @ColumnInfo(name = "step_count")
     public long stepCount;
 
@@ -41,13 +44,14 @@ public class PainRecord {
     public float pressure;
 
     public PainRecord(@NonNull String userEmail, long timestamp, int painIntensityLevel,
-                      @NonNull String painArea, @NonNull String mood, long stepCount,
+                      @NonNull String painArea, @NonNull String mood, long goal, long stepCount,
                       float temperature, float humidity, float pressure) {
         this.userEmail = userEmail;
         this.timestamp = timestamp;
         this.painIntensityLevel = painIntensityLevel;
         this.painArea = painArea;
         this.mood = mood;
+        this.goal = goal;
         this.stepCount = stepCount;
         this.temperature = temperature;
         this.humidity = humidity;
@@ -79,6 +83,10 @@ public class PainRecord {
     @NonNull
     public String getMood() {
         return mood;
+    }
+
+    public long getGoal() {
+        return goal;
     }
 
     public long getStepCount() {
@@ -123,6 +131,10 @@ public class PainRecord {
 
     public void setMood(@NonNull String mood) {
         this.mood = mood;
+    }
+
+    public void setGoal(long goal) {
+        this.goal = goal;
     }
 
     public void setTemperature(float temperature) {

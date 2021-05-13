@@ -234,6 +234,7 @@ public class PainDataEntryFragment extends Fragment {
                     intensityLevel,
                     painArea,
                     mood,
+                    10000,
                     stepCount,
                     WeatherInfo.getTemperature(),
                     WeatherInfo.getHumidity(),

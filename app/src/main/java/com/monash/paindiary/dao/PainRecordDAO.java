@@ -17,11 +17,20 @@ public interface PainRecordDAO {
     @Query("SELECT * FROM PAINRECORD ORDER BY timestamp DESC")
     LiveData<List<PainRecord>> getAll();
 
+    @Query("SELECT * FROM PAINRECORD ORDER BY timestamp DESC")
+    List<PainRecord> getAllSync();
+
     @Query("SELECT * FROM PAINRECORD WHERE uid = :uid LIMIT 1")
     PainRecord findByID(int uid);
 
     @Query("SELECT * FROM PAINRECORD WHERE timestamp = :timestamp LIMIT 1")
     PainRecord findByTimestamp(double timestamp);
+
+    @Query("SELECT * FROM PAINRECORD WHERE timestamp BETWEEN :startTime AND :endTime LIMIT 1")
+    PainRecord findByDate(double startTime, double endTime);
+
+    @Query("SELECT * FROM PAINRECORD WHERE timestamp BETWEEN :startDateTime AND :endDateTime")
+    List<PainRecord> findBetweenDates(double startDateTime, double endDateTime);
 
     @Insert
     void insert(PainRecord painRecord);

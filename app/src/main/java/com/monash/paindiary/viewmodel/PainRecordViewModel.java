@@ -9,8 +9,14 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 import com.monash.paindiary.entity.PainRecord;
+import com.monash.paindiary.helper.Converters;
 import com.monash.paindiary.repository.PainRecordRepository;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -34,11 +40,33 @@ public class PainRecordViewModel extends AndroidViewModel {
         return repository.findByTimestamp(timestamp);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public CompletableFuture<PainRecord> findRecordByDate(final Date date) {
+        LocalDate localDate = Converters.convertToLocalDateViaInstant(date);
+        return repository.findByDate(
+                Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant()).getTime(),
+                Date.from(LocalDateTime.of(localDate, LocalTime.MAX).atZone(ZoneId.systemDefault()).toInstant()).getTime());
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public CompletableFuture<List<PainRecord>> findRecordsBetweenDate(final Date startDate, final Date endDate) {
+        return repository.findBetweenDate(startDate.getTime(), endDate.getTime());
+    }
+
     public LiveData<List<PainRecord>> getAllPainRecords() {
         return allPainRecords;
     }
 
+    public List<PainRecord> getAllPainRecordsSync() {
+        return repository.getAllPainRecordsSync();
+    }
+
     public void insert(PainRecord painRecord) {
+        // TODO does not store in two decimal event after converting.
+        // may be store in String?
+        painRecord.setTemperature(Converters.customRoundFloat(painRecord.getTemperature()));
+        painRecord.setHumidity(Converters.customRoundFloat(painRecord.getHumidity()));
+        painRecord.setPressure(Converters.customRoundFloat(painRecord.getPressure()));
         repository.insert(painRecord);
     }
 
