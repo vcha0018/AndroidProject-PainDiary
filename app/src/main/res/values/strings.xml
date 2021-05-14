@@ -22,12 +22,9 @@
     <string name="mapbox_public_access_token">pk.eyJ1Ijoidml2ZWtjaGF1ZGhhcmkxOTE0IiwiYSI6ImNrb2pyY29pcjAyengzMW84emY5c29zZGEifQ._JeArQotjzyFlgHscOCDiw</string>
     <string name="enter_address">Enter address</string>
     <string name="locate">locate</string>
-    <string name="area">Area</string>
-    <string name="steps">Steps</string>
-    <string name="weather">Weather</string>
-    <string name="tab1">tab1</string>
-    <string name="tab2">tab2</string>
-    <string name="tab3">tab3</string>
+    <string name="tab1">Location</string>
+    <string name="tab2">Steps</string>
+    <string name="tab3">Correlation</string>
     <string name="pain_by_locations">Pain by Locations</string>
     <string name="today_s_goal">Today\'s Goal</string>
 </resources>

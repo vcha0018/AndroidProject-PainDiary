@@ -12,7 +12,7 @@ import com.monash.paindiary.entity.PainRecord;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Database(entities = {PainRecord.class}, version = 3, exportSchema = false)
+@Database(entities = {PainRecord.class}, version = 4, exportSchema = false)
 public abstract class PainRecordDatabase extends RoomDatabase {
     public abstract PainRecordDAO painRecordDAO();
 

@@ -1,11 +1,19 @@
 package com.monash.paindiary.fragments;
 
+import android.app.AlarmManager;
 import android.app.Dialog;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,28 +25,49 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.core.app.TaskStackBuilder;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavDeepLinkBuilder;
 import androidx.navigation.Navigation;
+import androidx.work.Data;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
+import androidx.work.WorkRequest;
 
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.slider.Slider;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.monash.paindiary.R;
 import com.monash.paindiary.activities.AppActivity;
 import com.monash.paindiary.apis.weather.RetrofitClient;
 import com.monash.paindiary.apis.weather.WeatherResponse;
 import com.monash.paindiary.databinding.FragmentPainDataEntryBinding;
 import com.monash.paindiary.entity.PainRecord;
+import com.monash.paindiary.entity.PainRecordStr;
 import com.monash.paindiary.enums.NavigationItem;
 import com.monash.paindiary.helper.Converters;
+import com.monash.paindiary.helper.DataUploadWorker;
+import com.monash.paindiary.helper.ReminderBroadcast;
 import com.monash.paindiary.helper.UserInfo;
 import com.monash.paindiary.helper.WeatherInfo;
 import com.monash.paindiary.viewmodel.PainRecordViewModel;
 
 import java.sql.Struct;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
@@ -47,11 +76,15 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class PainDataEntryFragment extends Fragment {
+public class PainDataEntryFragment extends Fragment implements ReminderDialogFragment.OnDialogResult {
     private FragmentPainDataEntryBinding binding;
     private PainRecordViewModel viewModel;
     private int uid = -1;
     private long last_inserted_timestamp;
+    private AlarmManager alarmMgr;
+    private PendingIntent alarmIntent;
+    private FirebaseDatabase firebaseDatabase;
+    private WorkRequest workRequest;
 
     public PainDataEntryFragment() {
     }
@@ -73,8 +106,24 @@ public class PainDataEntryFragment extends Fragment {
         binding.btnEdit.setOnClickListener(this::btnEditOnClicked);
         binding.painAreaChipGroup.setOnCheckedChangeListener(this::painAreaChipGroupOnCheckedChange);
         binding.sliderIntensityLevel.addOnChangeListener(this::sliderIntensityLevelOnChanged);
+        binding.editGoal.addTextChangedListener(editGoalTextWatcher());
 
         return view;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        boolean isFromNotification = false;
+        if (getArguments() != null && !getArguments().isEmpty() && getArguments().containsKey("isFromNotification")) {
+            isFromNotification = getArguments().getBoolean("isFromNotification");
+        }
+        if (!((AppActivity) getActivity()).isAlarmSet && !isFromNotification) {
+            ReminderDialogFragment reminderDialogFragment = new ReminderDialogFragment();
+            reminderDialogFragment.setTargetFragment(PainDataEntryFragment.this, 0);
+            reminderDialogFragment.show(getFragmentManager(), "ReminderDialog");
+        }
     }
 
     @Override
@@ -94,6 +143,25 @@ public class PainDataEntryFragment extends Fragment {
         Log.e("INFO", "onDestroyView");
         super.onDestroyView();
         binding = null;
+    }
+
+    private TextWatcher editGoalTextWatcher() {
+        return new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                binding.inputLayoutStepCount.setSuffixText("/" + s);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        };
     }
 
     private void fillUIControls(int uid) {
@@ -188,6 +256,7 @@ public class PainDataEntryFragment extends Fragment {
         int intensityLevel = Math.round(binding.sliderIntensityLevel.getValue());
         String painArea = ((Chip) binding.painAreaChipGroup.findViewById(binding.painAreaChipGroup.getCheckedChipId())).getText().toString();
         String mood = ((Button) binding.btnMoodGroup.findViewById(binding.btnMoodGroup.getCheckedButtonId())).getText().toString();
+        int goal = Integer.parseInt(binding.editGoal.getText().toString());
         int stepCount = Integer.parseInt(binding.editStepCount.getText().toString());
         if (WeatherInfo.getInstance() == null
                 || TimeUnit.HOURS.convert(new Date().getTime() - WeatherInfo.lastFetched.getTime(), TimeUnit.MILLISECONDS) >= 1) {
@@ -208,10 +277,10 @@ public class PainDataEntryFragment extends Fragment {
                                 response.body().getMain().getPressure(),
                                 true);
                         WeatherInfo.lastFetched = new Date();
-                        SaveEntry(intensityLevel, painArea, mood, stepCount, true);
+                        SaveEntry(intensityLevel, painArea, mood, goal, stepCount, true);
                     } else {
                         Log.i("ERROR", "Weather call failed");
-                        SaveEntry(intensityLevel, painArea, mood, stepCount, false);
+                        SaveEntry(intensityLevel, painArea, mood, goal, stepCount, false);
                     }
                 }
 
@@ -221,11 +290,11 @@ public class PainDataEntryFragment extends Fragment {
                 }
             });
         } else {
-            SaveEntry(intensityLevel, painArea, mood, stepCount, true);
+            SaveEntry(intensityLevel, painArea, mood, goal, stepCount, true);
         }
     }
 
-    private void SaveEntry(int intensityLevel, String painArea, String mood, int stepCount, boolean withWeather) {
+    private void SaveEntry(int intensityLevel, String painArea, String mood, int goal, int stepCount, boolean withWeather) {
         last_inserted_timestamp = Converters.dateToTimestamp(new Date());
         try {
             PainRecord newPainRecord = new PainRecord(
@@ -234,17 +303,19 @@ public class PainDataEntryFragment extends Fragment {
                     intensityLevel,
                     painArea,
                     mood,
-                    10000,
+                    goal,
                     stepCount,
                     WeatherInfo.getTemperature(),
                     WeatherInfo.getHumidity(),
                     WeatherInfo.getPressure()
             );
-            if (uid < 0)
-                viewModel.insert(newPainRecord);
-            else {
+            if (uid < 0) {
+                //TODO remove
+//                viewModel.insert(newPainRecord);
+                attachToWorker(newPainRecord);
+            } else {
                 newPainRecord.setUid(uid);
-                viewModel.update(newPainRecord);
+//                viewModel.update(newPainRecord);
             }
             // TODO Check if we need runOnUiThread for Toast through https://edstem.org/courses/5305/discussion/468294
             getActivity().runOnUiThread(() -> {
@@ -256,7 +327,6 @@ public class PainDataEntryFragment extends Fragment {
         } catch (Exception e) {
             Log.i("EXCEPTION", e.getMessage());
         }
-//        Navigation.findNavController(getView()).popBackStack();
     }
 
     private void btnEditOnClicked(View view) {
@@ -270,4 +340,77 @@ public class PainDataEntryFragment extends Fragment {
         }
     }
 
+    private void setAlarm(int hour, int minute) {
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH),
+                hour,
+                minute,
+                0);
+
+        // If the alarm has been set, cancel it.
+        if (alarmMgr != null) {
+            alarmMgr.cancel(alarmIntent);
+        }
+
+        alarmMgr = (AlarmManager) getContext().getSystemService(getContext().ALARM_SERVICE);
+        Intent intent = new Intent(getContext(), ReminderBroadcast.class);
+        alarmIntent = PendingIntent.getBroadcast(getActivity(), 0, intent, 0);
+
+        // With setInexactRepeating(), you have to use one of the AlarmManager interval
+        // constants--in this case, AlarmManager.INTERVAL_DAY.
+//        alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+//                AlarmManager.INTERVAL_DAY, alarmIntent);
+        alarmMgr.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmIntent);
+
+        Toast.makeText(getContext(), "Alarm is set", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onTimeSet(int hour, int minute) {
+        setAlarm(hour, minute);
+        ((AppActivity) getActivity()).isAlarmSet = true;
+    }
+
+    private void attachToWorker(PainRecord newPainRecord) {
+        long currentTime = System.currentTimeMillis();
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH),
+                calendar.get(Calendar.HOUR_OF_DAY), //TODO change to 22
+                calendar.get(Calendar.MINUTE) + 1, //TODO change to 0
+                0
+        );
+        long specificTimeToTrigger = calendar.getTimeInMillis();
+        long delay = specificTimeToTrigger - currentTime;
+        delay = delay < 0 ? 0 : delay;
+        workRequest = new OneTimeWorkRequest
+                .Builder(DataUploadWorker.class)
+                .setInputData(createInputData(newPainRecord))
+                .setInitialDelay(delay, TimeUnit.MILLISECONDS)
+                .build();
+        WorkManager.getInstance(getContext()).enqueue(workRequest);
+    }
+
+    private Data createInputData(PainRecord painRecord) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy HH:mm:ss");
+        return new Data.Builder()
+                .putInt("uid", painRecord.getUid())
+                .putString("email", painRecord.getUserEmail())
+                .putString("datetime", dateFormat.format(new Date(painRecord.getDateTime())))
+                .putInt("painIntensityLevel", painRecord.getPainIntensityLevel())
+                .putString("painArea", painRecord.getPainArea())
+                .putString("mood", painRecord.getMood())
+                .putInt("goal", painRecord.getGoal())
+                .putInt("steps", painRecord.getStepCount())
+                .putString("temperature", String.valueOf(painRecord.getTemperature()))
+                .putString("humidity", String.valueOf(painRecord.getHumidity()))
+                .putString("pressure", String.valueOf(painRecord.getPressure()))
+                .build();
+    }
 }

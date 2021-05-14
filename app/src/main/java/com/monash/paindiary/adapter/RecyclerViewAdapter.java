@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.monash.paindiary.R;
 import com.monash.paindiary.databinding.LayoutPainRecordBinding;
 import com.monash.paindiary.entity.PainRecord;
+import com.monash.paindiary.helper.Converters;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -43,9 +44,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         viewHolder.binding.textEntryDate.setText((new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss")).format(new Date(painRecord.getDateTime())));
         viewHolder.binding.painIntensityValue.setText(String.valueOf(painRecord.getPainIntensityLevel()));
         viewHolder.binding.painAreaValue.setText(painRecord.getPainArea());
-        viewHolder.binding.dailyStepValue.setText(String.valueOf(painRecord.getStepCount()));
+        viewHolder.binding.dailyStepValue.setText(String.format("%s/%s", Converters.formatInteger(painRecord.getStepCount()), Converters.formatInteger(painRecord.getGoal())));
         viewHolder.binding.moodValue.setText(painRecord.getMood());
-
         viewHolder.binding.temperatureValue.setText(String.valueOf(painRecord.getTemperature()));
         viewHolder.binding.humidityValue.setText(String.valueOf(painRecord.getHumidity()));
         viewHolder.binding.pressureValue.setText(String.valueOf(painRecord.getPressure()));

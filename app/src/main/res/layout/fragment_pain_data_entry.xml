@@ -136,7 +136,7 @@
                 style="@style/Widget.MaterialComponents.Chip.Choice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:checked="true"
+                android:checked="false"
                 android:text="shins" />
 
             <com.google.android.material.chip.Chip
@@ -257,38 +257,76 @@
             android:id="@+id/text_goal"
             style="@style/Theme.PainDiary.DataEntryTextHeader"
             android:layout_marginTop="5dp"
-            android:text="Goal"
+            android:text="Daily Goal"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/mood_button_layout" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/input_layout_step_count"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        <LinearLayout
+            android:id="@+id/layout_goal_steps"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="horizontal"
             android:layout_marginTop="10dp"
-            android:hint="Step Count"
-            android:textColorHint="@color/black"
-            app:boxStrokeColor="@color/black"
-            app:boxStrokeErrorColor="@android:color/holo_red_light"
-            app:boxStrokeWidthFocused="2dp"
-            app:endIconMode="clear_text"
-            app:endIconTint="@color/black"
-            app:hintTextColor="@color/black"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/text_goal"
-            app:startIconTint="@color/black">
+            android:weightSum="3">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edit_step_count"
-                android:layout_width="match_parent"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/input_layout_step_count"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_weight="2"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:inputType="number"
-                android:text="10000"
-                android:textColor="@color/black"
-                android:textCursorDrawable="@null"
-                android:tooltipText="Enter step count" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:hint="Enter Step Count"
+                app:suffixText="/10000"
+                android:textColorHint="@color/black"
+                app:boxStrokeColor="@color/black"
+                android:layout_marginEnd="4dp"
+                app:boxStrokeErrorColor="@android:color/holo_red_light"
+                app:boxStrokeWidthFocused="2dp"
+                app:endIconMode="clear_text"
+                app:endIconTint="@color/black"
+                app:hintTextColor="@color/black"
+                app:startIconTint="@color/black">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edit_step_count"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:textAlignment="textEnd"
+                    android:textColor="@color/black"
+                    android:textCursorDrawable="@null"
+                    android:tooltipText="Enter step count" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/input_layout_goal"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Goal"
+                android:textColorHint="@color/black"
+                app:boxStrokeColor="@color/black"
+                app:boxStrokeErrorColor="@android:color/holo_red_light"
+                app:boxStrokeWidthFocused="2dp"
+                app:endIconMode="clear_text"
+                app:endIconTint="@color/black"
+                app:hintTextColor="@color/black"
+                app:startIconTint="@color/black">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edit_goal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:text="10000"
+                    android:textColor="@color/black"
+                    android:textCursorDrawable="@null"
+                    android:tooltipText="Enter step count" />
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/control_btn_layout"
@@ -299,7 +337,7 @@
             android:orientation="horizontal"
             android:weightSum="3"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/input_layout_step_count">
+            app:layout_constraintTop_toBottomOf="@+id/layout_goal_steps">
 
             <Button
                 android:id="@+id/btn_save"

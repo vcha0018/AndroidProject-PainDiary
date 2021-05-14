@@ -12,16 +12,23 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.PainDiary">
-        <activity
-            android:name=".activities.AppActivity"
-            android:theme="@style/Theme.PainDiary.NoActionBar" />
         <activity android:name=".activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".activities.AppActivity"
+            android:parentActivityName=".activities.MainActivity"
+            android:launchMode="singleTask"
+            android:theme="@style/Theme.PainDiary.NoActionBar" />
+
+        <receiver
+            android:name=".helper.ReminderBroadcast"
+            android:enabled="true"
+            android:exported="true">
+        </receiver>
     </application>
 
 </manifest>

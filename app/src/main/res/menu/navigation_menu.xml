@@ -17,7 +17,7 @@
             android:id="@+id/nav_pain_data_entry_fragment"
             android:actionLayout="@layout/menu_item_layout"
             android:icon="@drawable/ic_baseline_edit_note_24"
-            android:title="New Entry"
+            android:title="Add Entry"
             app:showAsAction="always" />
     </group>
     <group android:id="@+id/gp3">

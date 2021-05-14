@@ -39,6 +39,7 @@ import com.monash.paindiary.fragments.MapViewFragment;
 import com.monash.paindiary.fragments.PainDataEntryFragment;
 import com.monash.paindiary.fragments.PainRecordViewFragment;
 import com.monash.paindiary.fragments.ReportViewFragment;
+import com.monash.paindiary.helper.UserInfo;
 import com.monash.paindiary.viewmodel.PainRecordViewModel;
 import com.monash.paindiary.workmanagers.WeatherFetchWork;
 
@@ -60,6 +61,7 @@ public class AppActivity extends AppCompatActivity {
 
     private RecyclerView.LayoutManager layoutManager;
     private PainRecordViewModel viewModel;
+    public boolean isAlarmSet = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +70,9 @@ public class AppActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         setSupportActionBar(binding.appBar.toolbar);
+
+        UserInfo.setINSTANCE("vivek.19142@gmail.com", "password", true);
+        getSupportActionBar().setTitle("Home");
         appBarConfiguration = new AppBarConfiguration
                 .Builder(
                 R.id.nav_home_fragment,
@@ -80,7 +85,6 @@ public class AppActivity extends AppCompatActivity {
 
         navHostFragment = (NavHostFragment) fragmentManager.findFragmentById(R.id.nav_host_fragment);
         navController = navHostFragment.getNavController();
-
 
         //Sets up a NavigationView for use with a NavController.
         NavigationUI.setupWithNavController(binding.navView, navController);

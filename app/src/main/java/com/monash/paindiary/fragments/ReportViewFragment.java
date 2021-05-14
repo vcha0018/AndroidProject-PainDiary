@@ -44,13 +44,13 @@ public class ReportViewFragment extends Fragment {
         new TabLayoutMediator(binding.tabLayout, binding.viewPager2, (tab, position) -> {
             switch (position) {
                 case 0:
-                    tab.setText(R.string.area);
+                    tab.setText(R.string.tab1);
                     break;
                 case 1:
-                    tab.setText(R.string.steps);
+                    tab.setText(R.string.tab2);
                     break;
                 case 2:
-                    tab.setText(R.string.weather);
+                    tab.setText(R.string.tab3);
                     break;
             }
         }).attach();

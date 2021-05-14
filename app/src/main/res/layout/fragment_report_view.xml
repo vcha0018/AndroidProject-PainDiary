@@ -2,12 +2,20 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:tabTextColor="@color/white"
+        app:tabSelectedTextColor="@color/yellow_500"
+        android:background="@color/teal_500"
+        app:tabIndicatorColor="@color/yellow_500"
+        app:tabRippleColor="@color/yellow_theme_light"
+        app:tabIndicatorHeight="4dp"
+        app:tabTextAppearance="@style/Theme.PainDiary.CustomTabText">
 
         <com.google.android.material.tabs.TabItem
 

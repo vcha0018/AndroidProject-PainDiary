@@ -5,6 +5,9 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import com.google.firebase.database.IgnoreExtraProperties;
+
+@IgnoreExtraProperties
 @Entity(tableName = "PAINRECORD")
 public class PainRecord {
     @PrimaryKey(autoGenerate = true)
@@ -29,10 +32,10 @@ public class PainRecord {
     public String mood;
 
     @ColumnInfo(name = "goal")
-    public long goal;
+    public int goal;
 
     @ColumnInfo(name = "step_count")
-    public long stepCount;
+    public int stepCount;
 
     @ColumnInfo(name = "day_temperature")
     public float temperature;
@@ -44,7 +47,7 @@ public class PainRecord {
     public float pressure;
 
     public PainRecord(@NonNull String userEmail, long timestamp, int painIntensityLevel,
-                      @NonNull String painArea, @NonNull String mood, long goal, long stepCount,
+                      @NonNull String painArea, @NonNull String mood, int goal, int stepCount,
                       float temperature, float humidity, float pressure) {
         this.userEmail = userEmail;
         this.timestamp = timestamp;
@@ -85,11 +88,11 @@ public class PainRecord {
         return mood;
     }
 
-    public long getGoal() {
+    public int getGoal() {
         return goal;
     }
 
-    public long getStepCount() {
+    public int getStepCount() {
         return stepCount;
     }
 
@@ -133,7 +136,7 @@ public class PainRecord {
         this.mood = mood;
     }
 
-    public void setGoal(long goal) {
+    public void setGoal(int goal) {
         this.goal = goal;
     }
 
