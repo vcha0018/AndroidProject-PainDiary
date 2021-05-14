@@ -2,6 +2,7 @@ package com.monash.paindiary.fragments;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.DragAndDropPermissions;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,6 +39,7 @@ import com.google.android.material.datepicker.MaterialDatePicker;
 import com.monash.paindiary.R;
 import com.monash.paindiary.databinding.FragmentReport3Binding;
 import com.monash.paindiary.entity.PainRecord;
+import com.monash.paindiary.helper.IntValueFormatter;
 import com.monash.paindiary.helper.WeatherInfo;
 import com.monash.paindiary.viewmodel.PainRecordViewModel;
 
@@ -52,18 +54,22 @@ import java.util.Locale;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.math3.linear.MatrixUtils;
+import org.apache.commons.math3.linear.RealMatrix;
+import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
+
 public class Report3Fragment extends Fragment {
     private FragmentReport3Binding binding;
     private LineChart lineChart;
     private MaterialDatePicker.Builder dateRangeBuilder;
     private Date startDate;
     private Date endDate;
+    private Date currentDateTime;
     private ArrayAdapter<String> arrayAdapter;
     private String selectedWeatherAtt = "";
-    // Do we require? to store data ? because every time time period change data should change
-//    private List<Integer> painIntensityList;
+    private int xAxisValueIndexCounter = 0;
+    private List<Long> xAxisDateRecords;
 //    // TODO change float to long and also in entity class.
-//    private List<Triplet<Float, Float, Float>> weatherAttrList;
 
     public Report3Fragment() {
     }
@@ -73,7 +79,7 @@ public class Report3Fragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentReport3Binding.inflate(inflater, container, false);
         View view = binding.getRoot();
-//        combinedChart = binding.combineChart;
+        currentDateTime = new Date();
         lineChart = binding.relationalLineChart;
         dateRangeBuilder = MaterialDatePicker.Builder.dateRangePicker();
         fillSpinner();
@@ -81,6 +87,7 @@ public class Report3Fragment extends Fragment {
         binding.btnSelectDateRange.setOnClickListener(this::btnSelectDateRangeOnClicked);
         binding.btnShow.setOnClickListener(this::btnShowOnClicked);
         binding.btnClear.setOnClickListener(this::btnClearOnClicked);
+        binding.btnPerformTest.setOnClickListener(this::btnPerformTestOnClicked);
         binding.editTextWeatherAttribute.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -104,6 +111,19 @@ public class Report3Fragment extends Fragment {
         binding.editTextWeatherAttribute.setText(selectedWeatherAtt, false);
     }
 
+    private void btnPerformTestOnClicked(View view) {
+        double[][] data = new double[xAxisDateRecords.size()][];
+        for (int i = 0; i < xAxisDateRecords.size(); i++) {
+            data[i] = new double[2];
+            data[i][0] = lineChart.getLineData().getDataSetByIndex(0).getEntryForIndex(i).getY();
+            data[i][1] = lineChart.getLineData().getDataSetByIndex(1).getEntryForIndex(i).getY();
+        }
+        Pair<Double, Double> pair = getCorrelationValues(data);
+        binding.textRValue.setText(String.valueOf(pair.second));
+        binding.textPValue.setText(String.valueOf(pair.first));
+        binding.layoutTestResult.setVisibility(View.VISIBLE);
+    }
+
     private void btnSelectDateRangeOnClicked(View view) {
         binding.layoutSpinnerWeatherAttribute.clearFocus();
         MaterialDatePicker datePicker = dateRangeBuilder
@@ -122,26 +142,53 @@ public class Report3Fragment extends Fragment {
 
     private void btnShowOnClicked(View view) {
         binding.layoutSpinnerWeatherAttribute.clearFocus();
+        binding.btnPerformTest.setEnabled(false);
+        binding.layoutTestResult.setVisibility(View.INVISIBLE);
         if (startDate == null || endDate == null) {
             Toast.makeText(getContext(), "Please select date range first.", Toast.LENGTH_SHORT).show();
         } else {
-            if (lineChart.getLineData() != null) {
-                lineChart.setData(null);
-                lineChart.invalidate();
+            try {
+                if (lineChart.getData() != null) {
+                    resetChart();
+                }
+                lineChart.getXAxis().setValueFormatter(new ValueFormatter() {
+                    private final SimpleDateFormat mFormat = new SimpleDateFormat("dd MMM", Locale.ENGLISH);
+
+                    @Override
+                    public String getFormattedValue(float value) {
+                        // TODO still not valid date shows
+                        if (xAxisValueIndexCounter >= lineChart.getLineData().getDataSetByIndex(0).getEntryCount())
+                            xAxisValueIndexCounter = 0;
+                        return mFormat.format(new Date(xAxisDateRecords.get(xAxisValueIndexCounter++)));
+                    }
+                });
+                loadRelationalLineChartData();
+                binding.btnPerformTest.setEnabled(true);
+            } catch (Exception e) {
+                Log.e("EXCEPTION", e.getMessage());
             }
-            loadRelationalLineChartData();
         }
+    }
+
+    private void resetChart() {
+        lineChart.getData().clearValues();
+        lineChart.getXAxis().setValueFormatter(null);
+        lineChart.notifyDataSetChanged();
+        lineChart.clear();
+        lineChart.invalidate();
     }
 
     private void btnClearOnClicked(View view) {
         binding.layoutSpinnerWeatherAttribute.clearFocus();
+        binding.btnPerformTest.setEnabled(false);
+        binding.layoutTestResult.setVisibility(View.INVISIBLE);
+        resetChart();
         startDate = null;
         endDate = null;
         lineChart.resetZoom();
         lineChart.setData(null);
         binding.btnSelectDateRange.setText("Select date range");
     }
-
 
     private void setUpRelationalLineChart() {
         lineChart.getDescription().setEnabled(false);
@@ -157,38 +204,17 @@ public class Report3Fragment extends Fragment {
 
         YAxis rightAxis = lineChart.getAxisRight();
         rightAxis.setDrawGridLines(false);
-//        rightAxis.setGranularity(1f);
         rightAxis.setAxisMinimum(0f);
 
         YAxis leftAxis = lineChart.getAxisLeft();
         leftAxis.setDrawGridLines(false);
-//        leftAxis.setGranularity(10f);
         leftAxis.setAxisMinimum(0f);
 
         XAxis xAxis = lineChart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setDrawGridLines(true);
         xAxis.setAxisMinimum(0f);
-//        xAxis.setGranularity(1f);
         xAxis.setCenterAxisLabels(true);
-        xAxis.setGranularity(1f); // one day
-        xAxis.setValueFormatter(new IndexAxisValueFormatter() {
-            @Override
-            public String getFormattedValue(float value) {
-                Date date = new Date((long) value);
-                //Specify the format you'd like
-                SimpleDateFormat sdf = new SimpleDateFormat("MM/dd", Locale.ENGLISH);
-                return sdf.format(date);
-            }
-        });
-//        xAxis.setValueFormatter(new ValueFormatter() {
-//            private final SimpleDateFormat mFormat = new SimpleDateFormat("dd MMM", Locale.ENGLISH);
-//
-//            @Override
-//            public String getFormattedValue(float value) {
-//                long millis = TimeUnit.DAYS.toMillis((long) value);
-//                return mFormat.format(new Date(millis));
-//            }
-//        });
     }
 
     private void loadRelationalLineChartData() {
@@ -197,51 +223,48 @@ public class Report3Fragment extends Fragment {
             viewModel.findRecordsBetweenDate(startDate, endDate).thenApply(painRecords -> {
                 ArrayList<Entry> entries_pain_intensities = new ArrayList<Entry>();
                 ArrayList<Entry> entries_weather_att = new ArrayList<Entry>();
-                SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM");
-
+                xAxisDateRecords = new ArrayList<>();
+                painRecords.sort((a, b) -> Float.compare(a.getDateTime(), b.getDateTime()));
                 for (PainRecord painRecord : painRecords) {
+                    xAxisDateRecords.add(painRecord.getDateTime());
                     entries_pain_intensities.add(
                             new Entry(
-//                                    TimeUnit.MILLISECONDS.toDays(painRecord.getDateTime()),
-                                    painRecord.getDateTime(),
+                                    xAxisValueIndexCounter,
                                     painRecord.getPainIntensityLevel()));
                     entries_weather_att.add(
                             new Entry(
-                                    painRecord.getDateTime(),
+                                    xAxisValueIndexCounter,
                                     selectedWeatherAtt.toLowerCase().equals("pressure") ?
                                             painRecord.getPressure() :
                                             selectedWeatherAtt.toLowerCase().equals("humidity") ?
                                                     painRecord.getHumidity() :
                                                     painRecord.getTemperature()));
+                    xAxisValueIndexCounter++;
                 }
-
-                LineData data = new LineData();
-
-                data.addDataSet(
-                        getDataSet(
-                                entries_pain_intensities,
-                                YAxis.AxisDependency.LEFT,
-                                "Pain Intensity",
-                                getResources().getColor(R.color.teal_500, null)));
-                data.addDataSet(
-                        getDataSet(
-                                entries_weather_att,
-                                YAxis.AxisDependency.RIGHT,
-                                selectedWeatherAtt,
-                                getResources().getColor(R.color.yellow_theme_dark, null)));
-                lineChart.setData(data);
-                lineChart.invalidate();
-
-                lineChart.animateX(1000, Easing.EaseInOutSine);
-
+                getActivity().runOnUiThread(() -> {
+                    lineChart.setData(new LineData(
+                            getDataSet(
+                                    entries_pain_intensities,
+                                    YAxis.AxisDependency.LEFT,
+                                    "Pain Intensity",
+                                    getResources().getColor(R.color.teal_500, null)),
+                            getDataSet(
+                                    entries_weather_att,
+                                    YAxis.AxisDependency.RIGHT,
+                                    selectedWeatherAtt,
+                                    getResources().getColor(R.color.yellow_theme_dark, null))
+                    ));
+                    lineChart.invalidate();
+                    lineChart.animateX(1000, Easing.EaseInOutSine);
+                });
                 return painRecords;
             });
         }).start();
     }
 
     @NonNull
-    private LineDataSet getDataSet(List<Entry> entries, YAxis.AxisDependency axisDependency, String label, int color) {
-        Collections.sort(entries, new EntryXComparator());
+    private LineDataSet getDataSet(@NonNull List<Entry> entries, YAxis.AxisDependency axisDependency, String label, int color) {
+        entries.sort((a, b) -> Float.compare(a.getX(), b.getX()));
         LineDataSet set = new LineDataSet(entries, label);
         set.setColor(color);
         set.setLineWidth(2.5f);
@@ -257,29 +280,33 @@ public class Report3Fragment extends Fragment {
         return set;
     }
 
-}
+    /// First pair is P value and second is correlation value.
+    private Pair<Double, Double> getCorrelationValues(double[][] data) {
+        // two column array: 1st column=first array, 1st column=second array
+//        double data[][] = {
+//                {1, 1},
+//                {-1, 0},
+//                {11, 87},
+//                {-6, 5},
+//                {-6, 3},
+//        };
+        // create a realmatrix
+        RealMatrix m = MatrixUtils.createRealMatrix(data);
+        // measure all correlation test: x-x, x-y, y-x, y-x
+        for (int i = 0; i < m.getColumnDimension(); i++)
+            for (int j = 0; j < m.getColumnDimension(); j++) {
+                PearsonsCorrelation pc = new PearsonsCorrelation();
+                double cor = pc.correlation(m.getColumn(i), m.getColumn(j));
+//                System.out.println(i + "," + j + "=[" + String.format(".%2f", cor) + "," + "]");
+            }
+        // correlation test (another method): x-y
+        PearsonsCorrelation pc = new PearsonsCorrelation(m);
+        RealMatrix corM = pc.getCorrelationMatrix();
+        // significant test of the correlation coefficient (p-value)
+        RealMatrix pM = pc.getCorrelationPValues();
+        return new Pair<>(pM.getEntry(0, 1), corM.getEntry(0, 1));
+//        return ("p value:" + pM.getEntry(0, 1) + "\n" + " correlation: " +
+//                corM.getEntry(0, 1));
+    }
 
-//class Triplet<T, U, V> {
-//
-//    private final T first;
-//    private final U second;
-//    private final V third;
-//
-//    public Triplet(T first, U second, V third) {
-//        this.first = first;
-//        this.second = second;
-//        this.third = third;
-//    }
-//
-//    public T getFirst() {
-//        return first;
-//    }
-//
-//    public U getSecond() {
-//        return second;
-//    }
-//
-//    public V getThird() {
-//        return third;
-//    }
-//}
+}

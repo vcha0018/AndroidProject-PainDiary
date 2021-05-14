@@ -82,7 +82,7 @@ public class ReportViewFragment extends Fragment {
                     painAreaArray[random.nextInt(painAreaArray.length)],
                     i == 5 ? moodArray[2] : i > 5 ? moodArray[random.nextInt(2)] : moodArray[random.nextInt(2) + 3],
                     10000,
-                    i == 5 ? 8000 : i > 6 ? random.nextInt(5000) + 1000 : random.nextInt(5000) + 6000,
+                    i == 5 ? 8000 : i > 6 ? random.nextInt(5000) + 1000 : random.nextInt(5000) + 5000,
                     temps[random.nextInt(temps.length)],
                     random.nextInt(100),
                     random.nextInt(400) + 700

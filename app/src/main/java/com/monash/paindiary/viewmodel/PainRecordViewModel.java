@@ -12,6 +12,7 @@ import com.monash.paindiary.entity.PainRecord;
 import com.monash.paindiary.helper.Converters;
 import com.monash.paindiary.repository.PainRecordRepository;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -50,7 +51,11 @@ public class PainRecordViewModel extends AndroidViewModel {
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public CompletableFuture<List<PainRecord>> findRecordsBetweenDate(final Date startDate, final Date endDate) {
-        return repository.findBetweenDate(startDate.getTime(), endDate.getTime());
+        LocalDate localStartDate = Converters.convertToLocalDateViaInstant(startDate);
+        LocalDate localEndDate = Converters.convertToLocalDateViaInstant(endDate);
+        return repository.findBetweenDate(
+                Date.from(localStartDate.minusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant()).getTime(),
+                Date.from(localEndDate.plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant()).getTime());
     }
 
     public LiveData<List<PainRecord>> getAllPainRecords() {
