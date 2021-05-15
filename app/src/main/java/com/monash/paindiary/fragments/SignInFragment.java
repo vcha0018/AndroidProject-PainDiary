@@ -21,6 +21,7 @@ import com.monash.paindiary.activities.AppActivity;
 import com.monash.paindiary.activities.MainActivity;
 import com.monash.paindiary.databinding.FragmentSignInBinding;
 import com.monash.paindiary.enums.FragmentEnums;
+import com.monash.paindiary.helper.Helper;
 import com.monash.paindiary.helper.UserInfo;
 
 import java.util.regex.Matcher;
@@ -35,6 +36,7 @@ import java.util.regex.Pattern;
  * create an instance of this fragment.
  */
 public class SignInFragment extends Fragment {
+    private final static String THIS_CLASS = "SignInFragment";
     private FragmentSignInBinding binding;
     private FirebaseAuth auth;
 
@@ -60,23 +62,7 @@ public class SignInFragment extends Fragment {
             ((MainActivity) getActivity()).changeFragment(FragmentEnums.SignUp);
         });
 
-        binding.btnSignIn.setOnClickListener(v -> {
-            if (inputValidationCheck()) {
-                auth.signInWithEmailAndPassword(binding.editEmail.getText().toString(), binding.editPassword.getText().toString())
-                        .addOnSuccessListener(authResult -> {
-                            Toast.makeText(getContext(), "Login Success!", Toast.LENGTH_SHORT).show();
-                            UserInfo.setINSTANCE(binding.editEmail.getText().toString(), binding.editPassword.getText().toString(), true);
-                            Intent intent = new Intent(getActivity(), AppActivity.class);
-                            startActivity(intent);
-                            getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                        })
-                        .addOnFailureListener(e -> {
-                            // TODO: Find a way to detect username or password is incorrect or both.
-                            Toast.makeText(getContext(), "Invalid username or password. Please try again.", Toast.LENGTH_SHORT).show();
-                            Log.println(Log.ERROR, "EXCEPTION", e.getMessage());
-                        });
-            }
-        });
+        binding.btnSignIn.setOnClickListener(this::btnSignInOnClicked);
 
         binding.editPassword.addTextChangedListener(new TextWatcher() {
             @Override
@@ -121,6 +107,33 @@ public class SignInFragment extends Fragment {
         binding = null;
     }
 
+    private void btnSignInOnClicked(View view) {
+        binding.btnSignIn.requestFocus();
+        if (inputValidationCheck()) {
+            try {
+                auth.signInWithEmailAndPassword(binding.editEmail.getText().toString(), binding.editPassword.getText().toString())
+                        .addOnSuccessListener(authResult -> {
+                            Toast.makeText(getContext(), "Login Success!", Toast.LENGTH_SHORT).show();
+                            UserInfo.setINSTANCE(binding.editEmail.getText().toString(), binding.editPassword.getText().toString(), true);
+                            Intent intent = new Intent(getActivity(), AppActivity.class);
+                            startActivity(intent);
+                            getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                        })
+                        .addOnFailureListener(e -> {
+                            // TODO: Find a way to detect username or password is incorrect or both.
+                            if (e.getMessage().contains("network error"))
+                                Toast.makeText(getContext(), "SignIn un-successful! Please check your internet connectivity and try again", Toast.LENGTH_SHORT).show();
+                            else
+                                Toast.makeText(getContext(), "Invalid username or password. Please try again.", Toast.LENGTH_SHORT).show();
+                            Log.println(Log.ERROR, "EXCEPTION", e.getMessage());
+                        });
+            } catch (Exception e) {
+                Toast.makeText(getContext(), "SignIn un-successful! Please check your internet connectivity and try again", Toast.LENGTH_SHORT).show();
+                Log.e(THIS_CLASS, "EXCEPTION: btnSignInOnClicked: " + e.getMessage());
+            }
+        }
+    }
+
     private boolean inputValidationCheck() {
         boolean isAllValid = true;
         String email = binding.editEmail.getText().toString();
@@ -130,9 +143,9 @@ public class SignInFragment extends Fragment {
             binding.inputLayoutEmail.setEndIconVisible(false);
             binding.inputLayoutEmail.setError("Email cannot be blank");
             isAllValid = false;
-        } else if (!isEmailValid(email)) {
+        } else if (!Helper.isEmailValid(email)) {
             binding.inputLayoutEmail.setEndIconVisible(false);
-            binding.inputLayoutEmail.setError("Not valid email id.");
+            binding.inputLayoutEmail.setError("Not valid email id");
             isAllValid = false;
         }
         if (password.isEmpty()) {
@@ -141,27 +154,5 @@ public class SignInFragment extends Fragment {
             isAllValid = false;
         }
         return isAllValid;
-    }
-
-    /**
-     * method is used for checking valid email id format.
-     *
-     * @param email
-     * @return boolean true for valid false for invalid
-     */
-    private static boolean isEmailValid(String email) {
-        String expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";
-        Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
-        Matcher matcher = pattern.matcher(email);
-        return matcher.matches();
-    }
-
-    private static boolean isPasswordValid(String password) {
-        //complete pattern that should force the user to use digits, lower case, upper case and special characters.
-        // ^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{4,20}$
-        String expression = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\\\\S+$).{4,12}$";
-        Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
-        Matcher matcher = pattern.matcher(password);
-        return matcher.matches();
     }
 }
