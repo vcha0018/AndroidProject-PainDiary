@@ -77,6 +77,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class PainDataEntryFragment extends Fragment implements ReminderDialogFragment.OnDialogResult {
+    private final static String THIS_CLASS = "PainDataEntryFragment";
     private FragmentPainDataEntryBinding binding;
     private PainRecordViewModel viewModel;
     private int uid = -1;
@@ -92,7 +93,6 @@ public class PainDataEntryFragment extends Fragment implements ReminderDialogFra
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Log.e("INFO", "onCreateView");
         //Initialize vars
         binding = FragmentPainDataEntryBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
@@ -140,9 +140,14 @@ public class PainDataEntryFragment extends Fragment implements ReminderDialogFra
 
     @Override
     public void onDestroyView() {
-        Log.e("INFO", "onDestroyView");
         super.onDestroyView();
         binding = null;
+    }
+
+    @Override
+    public void onAlarmTimeSet(int hour, int minute) {
+        setAlarm(hour, minute);
+        ((AppActivity) getActivity()).isAlarmSet = true;
     }
 
     private TextWatcher editGoalTextWatcher() {
@@ -348,31 +353,21 @@ public class PainDataEntryFragment extends Fragment implements ReminderDialogFra
                 calendar.get(Calendar.MONTH),
                 calendar.get(Calendar.DAY_OF_MONTH),
                 hour,
-                minute,
+                minute - 2, // 2 minutes before
                 0);
-
-        // If the alarm has been set, cancel it.
-        if (alarmMgr != null) {
-            alarmMgr.cancel(alarmIntent);
-        }
 
         alarmMgr = (AlarmManager) getContext().getSystemService(getContext().ALARM_SERVICE);
         Intent intent = new Intent(getContext(), ReminderBroadcast.class);
         alarmIntent = PendingIntent.getBroadcast(getActivity(), 0, intent, 0);
-
-        // With setInexactRepeating(), you have to use one of the AlarmManager interval
-        // constants--in this case, AlarmManager.INTERVAL_DAY.
-//        alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
-//                AlarmManager.INTERVAL_DAY, alarmIntent);
-        alarmMgr.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmIntent);
+        // If the alarm has been set, cancel it.
+        if (alarmMgr != null) {
+            alarmMgr.cancel(alarmIntent);
+        }
+        alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                AlarmManager.INTERVAL_DAY, alarmIntent);
+//        alarmMgr.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmIntent);
 
         Toast.makeText(getContext(), "Alarm is set", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onTimeSet(int hour, int minute) {
-        setAlarm(hour, minute);
-        ((AppActivity) getActivity()).isAlarmSet = true;
     }
 
     private void attachToWorker(PainRecord newPainRecord) {
@@ -395,6 +390,7 @@ public class PainDataEntryFragment extends Fragment implements ReminderDialogFra
                 .setInitialDelay(delay, TimeUnit.MILLISECONDS)
                 .build();
         WorkManager.getInstance(getContext()).enqueue(workRequest);
+        Log.i(THIS_CLASS, "Future Data Entry Work has been set and will be triggered at " + new SimpleDateFormat("dd MMM yyyy HH:mm:ss").format(calendar.getTime()));
     }
 
     private Data createInputData(PainRecord painRecord) {

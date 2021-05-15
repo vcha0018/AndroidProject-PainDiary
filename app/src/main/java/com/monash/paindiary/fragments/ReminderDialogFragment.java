@@ -27,7 +27,7 @@ public class ReminderDialogFragment extends DialogFragment {
     private int WINDOW_WIDTH;
 
     public interface OnDialogResult {
-        void onTimeSet(int hour, int minute);
+        void onAlarmTimeSet(int hour, int minute);
     }
     public OnDialogResult onDialogResult;
 
@@ -65,14 +65,7 @@ public class ReminderDialogFragment extends DialogFragment {
         View view = dialogBinding.getRoot();
 
         dialogBinding.btnSet.setOnClickListener(v -> {
-            final Calendar calendar = Calendar.getInstance();
-            calendar.set(Calendar.HOUR_OF_DAY, dialogBinding.timePicker.getHour());
-            calendar.set(Calendar.MINUTE, dialogBinding.timePicker.getMinute());
-            calendar.set(Calendar.SECOND, 0);
-            calendar.set(Calendar.MILLISECOND, 0);
-
-            long millis = calendar.getTimeInMillis();
-            onDialogResult.onTimeSet(dialogBinding.timePicker.getHour(), dialogBinding.timePicker.getMinute());
+            onDialogResult.onAlarmTimeSet(dialogBinding.timePicker.getHour(), dialogBinding.timePicker.getMinute());
             getDialog().dismiss();
         });
 
