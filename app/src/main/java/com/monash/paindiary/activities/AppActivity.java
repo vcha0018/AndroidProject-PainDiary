@@ -1,79 +1,51 @@
 package com.monash.paindiary.activities;
 
+import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.os.Bundle;
+import android.view.View;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.work.BackoffPolicy;
-import androidx.work.PeriodicWorkRequest;
-import androidx.work.WorkManager;
 
-import android.annotation.SuppressLint;
-import android.content.pm.ActivityInfo;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.MenuItem;
-import android.widget.Toast;
-
-import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.monash.paindiary.R;
-import com.monash.paindiary.adapter.RecyclerViewAdapter;
-import com.monash.paindiary.apis.weather.RetrofitClient;
-import com.monash.paindiary.apis.weather.RetrofitInterface;
-import com.monash.paindiary.apis.weather.WeatherResponse;
 import com.monash.paindiary.databinding.ActivityAppBinding;
 import com.monash.paindiary.entity.PainRecord;
-import com.monash.paindiary.enums.FragmentEnums;
 import com.monash.paindiary.enums.NavigationItem;
-import com.monash.paindiary.fragments.MapViewFragment;
-import com.monash.paindiary.fragments.PainDataEntryFragment;
-import com.monash.paindiary.fragments.PainRecordViewFragment;
-import com.monash.paindiary.fragments.ReportViewFragment;
 import com.monash.paindiary.helper.UserInfo;
 import com.monash.paindiary.viewmodel.PainRecordViewModel;
-import com.monash.paindiary.workmanagers.WeatherFetchWork;
 
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import java.util.Date;
+import java.util.Random;
 
 public class AppActivity extends AppCompatActivity {
 
     private ActivityAppBinding binding;
-    private AppBarConfiguration appBarConfiguration;
-    private FragmentManager fragmentManager = getSupportFragmentManager();
-    private NavHostFragment navHostFragment;
+    private final FragmentManager fragmentManager = getSupportFragmentManager();
     private NavController navController;
-    private WorkManager workManager;
-
-    private RecyclerView.LayoutManager layoutManager;
-    private PainRecordViewModel viewModel;
     public boolean isAlarmSet = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityAppBinding.inflate(getLayoutInflater());
+        ShowProgress(true);
         setContentView(binding.getRoot());
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         setSupportActionBar(binding.appBar.toolbar);
 
-        UserInfo.setINSTANCE("vivek.19142@gmail.com", "password", true);
+        //TODO : Remove in production in final
+        UserInfo.setINSTANCE("v@v.com", true);
         getSupportActionBar().setTitle("Home");
-        appBarConfiguration = new AppBarConfiguration
+        AppBarConfiguration appBarConfiguration = new AppBarConfiguration
                 .Builder(
                 R.id.nav_home_fragment,
                 R.id.nav_pain_record_view_fragment,
@@ -83,32 +55,37 @@ public class AppActivity extends AppCompatActivity {
                 .setOpenableLayout(binding.drawerLayout)
                 .build();
 
-        navHostFragment = (NavHostFragment) fragmentManager.findFragmentById(R.id.nav_host_fragment);
+        NavHostFragment navHostFragment = (NavHostFragment) fragmentManager.findFragmentById(R.id.nav_host_fragment);
         navController = navHostFragment.getNavController();
 
         //Sets up a NavigationView for use with a NavController.
         NavigationUI.setupWithNavController(binding.navView, navController);
         //Sets up a Toolbar for use with a NavController.
         NavigationUI.setupWithNavController(binding.appBar.toolbar, navController, appBarConfiguration);
-        navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
 
-        });
-
+        binding.navBtnSignOut.setOnClickListener(this::navBtnSignOutOnClicked);
+        binding.navBtnDummyDataAdd.setOnClickListener(this::navBtnDummyDataAddOnClicked);
     }
 
-    private void SetWorkForWeatherInfo() {
-        PeriodicWorkRequest weatherFetchRequest =
-                new PeriodicWorkRequest
-                        .Builder(WeatherFetchWork.class, 1, TimeUnit.HOURS)
-                        .setBackoffCriteria(
-                                BackoffPolicy.LINEAR,
-                                PeriodicWorkRequest.MIN_PERIODIC_INTERVAL_MILLIS,
-                                TimeUnit.MILLISECONDS)
-                        .addTag("WeatherFetchWork")
-                        .build();
+    private void navBtnSignOutOnClicked(View view) {
+        ((DrawerLayout) findViewById(R.id.drawer_layout)).closeDrawers();
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+    }
 
-        workManager = WorkManager.getInstance(this);
-        workManager.enqueue(weatherFetchRequest);
+    private void navBtnDummyDataAddOnClicked(View view) {
+        ((DrawerLayout) findViewById(R.id.drawer_layout)).closeDrawers();
+        new MaterialAlertDialogBuilder(this)
+                .setTitle("Confirmation")
+                .setMessage("This will delete all previous data and insert 10 new random data.")
+                .setNegativeButton("ACCEPT", (dialog, which) -> {
+                    ShowProgress(true);
+                    BuildDummyData();
+                })
+                .setPositiveButton("DECLINE", (dialog, which) -> {
+                    // Nothing
+                })
+                .show();
     }
 
     public void ManualSelectNavigationItem(@NonNull NavigationItem navigationItem) {
@@ -134,9 +111,63 @@ public class AppActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         if (navController.getCurrentDestination().getId() == R.id.nav_home_fragment) {
-//            workManager.cancelAllWorkByTag("WeatherFetchWork");
             finishAffinity();
         }
         super.onBackPressed();
+    }
+
+    public void ShowProgress(boolean isShown) {
+        binding.loadingPanel.setVisibility(isShown ? View.VISIBLE : View.INVISIBLE);
+    }
+
+    private void BuildDummyData() {
+        new Thread(() -> {
+            PainRecordViewModel viewModel = new ViewModelProvider(this).get(PainRecordViewModel.class);
+            viewModel.deleteAll();
+            Random random = new Random();
+            Date currentDate = new Date();
+            String[] painAreaArray = new String[]{"back", "neck", "head", "knees", "hips", "abdomen", "elbows", "shoulders", "shins", "jaw", "facial"};
+            String[] moodArray = new String[]{"very low", "low", "average", "good", "very good"};
+            Float[] temps = new Float[]{11.0f, 18.3f, 30.4f, 22.1f, 9f, 20f, 15.5f};
+
+            for (int i = 0; i < 10; i++) {
+                PainRecord newPainRecord = new PainRecord(
+                        UserInfo.getUserEmail(),
+                        new Date(currentDate.getTime() - (i * 24 * 60 * 60 * 1000)).getTime(),
+                        i == 5 ? i : i > 5 ? random.nextInt(5) + 6 : random.nextInt(5),
+                        painAreaArray[random.nextInt(painAreaArray.length)],
+                        i == 5 ? moodArray[2] : i > 5 ? moodArray[random.nextInt(2)] : moodArray[random.nextInt(2) + 3],
+                        10000,
+                        i == 5 ? 8000 : i > 6 ? random.nextInt(5000) + 1000 : random.nextInt(5000) + 5000,
+                        temps[random.nextInt(temps.length)],
+                        random.nextInt(100),
+                        random.nextInt(400) + 700
+                );
+                viewModel.insert(newPainRecord);
+            }
+            setTodayEntry();
+            runOnUiThread(() -> {
+                ShowProgress(false);
+                new MaterialAlertDialogBuilder(this)
+                        .setTitle("Success")
+                        .setMessage("10 New records inserted!")
+                        .setPositiveButton("CANCEL", (dialog, which) -> {
+                            // Nothing
+                        })
+                        .show();
+            });
+        }).start();
+    }
+
+    private void setTodayEntry() {
+        if (UserInfo.getInstance() != null) {
+            PainRecordViewModel viewModel = new ViewModelProvider(this).get(PainRecordViewModel.class);
+            viewModel.findRecordByDate(new Date()).thenApply(painRecord -> {
+                if (painRecord != null) {
+                    UserInfo.getInstance().setTodayEntryUID(painRecord.getUid());
+                }
+                return painRecord;
+            });
+        }
     }
 }

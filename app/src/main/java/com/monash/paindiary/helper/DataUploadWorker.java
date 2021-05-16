@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.work.Data;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
@@ -14,15 +13,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.monash.paindiary.entity.PainRecord;
 import com.monash.paindiary.entity.PainRecordStr;
-import com.monash.paindiary.viewmodel.PainRecordViewModel;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class DataUploadWorker extends Worker {
-    private FirebaseDatabase firebaseDatabase;
 
     public DataUploadWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
@@ -60,7 +56,7 @@ public class DataUploadWorker extends Worker {
     }
 
     private void writeDataToFirebase(PainRecordStr painRecord) {
-        firebaseDatabase = FirebaseDatabase.getInstance();
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference databaseRef = firebaseDatabase.getReference("PainRecords");
         String userId = databaseRef.push().getKey();
         databaseRef.addValueEventListener(new ValueEventListener() {

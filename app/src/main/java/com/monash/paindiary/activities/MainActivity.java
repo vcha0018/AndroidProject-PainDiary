@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.view.View;
 
 import com.monash.paindiary.enums.FragmentEnums;
 import com.monash.paindiary.R;
@@ -19,8 +20,8 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     private final FragmentManager fragmentManager = getSupportFragmentManager();
 
-    private static SignInFragment signInFragment = new SignInFragment();
-    private static SignUpFragment signUpFragment = new SignUpFragment();
+    private static final SignInFragment signInFragment = new SignInFragment();
+    private static final SignUpFragment signUpFragment = new SignUpFragment();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,8 +31,8 @@ public class MainActivity extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
 //        getSupportActionBar().hide();
 
-        changeFragment(FragmentEnums.SignIn);
-//        byPassSignIn();
+//        changeFragment(FragmentEnums.SignIn);
+        byPassSignIn();
     }
 
     private void byPassSignIn() {
@@ -39,13 +40,11 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    @Override
-    public void finish() {
-        super.finish();
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-    }
-
     public void changeFragment(FragmentEnums replaceFragment) {
+        ShowProgress(true);
+        if (replaceFragment == FragmentEnums.SignIn && signInFragment.isVisible()) {
+            fragmentManager.beginTransaction().remove(signInFragment).commit();
+        }
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         Fragment fragmentFromStack = fragmentManager.findFragmentByTag(replaceFragment.name());
         if (fragmentFromStack != null) {
@@ -63,5 +62,17 @@ public class MainActivity extends AppCompatActivity {
             }
             transaction.commit();
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (signInFragment.isVisible()) {
+            finishAffinity();
+        }
+        super.onBackPressed();
+    }
+
+    public void ShowProgress(boolean isShown) {
+        binding.loadingPanel.setVisibility(isShown ? View.VISIBLE : View.INVISIBLE);
     }
 }

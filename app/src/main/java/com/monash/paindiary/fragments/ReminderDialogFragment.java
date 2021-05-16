@@ -2,8 +2,6 @@ package com.monash.paindiary.fragments;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -17,9 +15,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.monash.paindiary.databinding.LayoutReminderDialogBinding;
-
-import java.sql.Timestamp;
-import java.util.Calendar;
 
 public class ReminderDialogFragment extends DialogFragment {
     private LayoutReminderDialogBinding dialogBinding;
@@ -63,13 +58,19 @@ public class ReminderDialogFragment extends DialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         dialogBinding = LayoutReminderDialogBinding.inflate(inflater, container, false);
         View view = dialogBinding.getRoot();
+        dialogBinding.btnSet.setEnabled(true);
+        dialogBinding.btnCancel.setEnabled(true);
 
         dialogBinding.btnSet.setOnClickListener(v -> {
+            dialogBinding.btnSet.setEnabled(false);
+            dialogBinding.btnCancel.setEnabled(false);
             onDialogResult.onAlarmTimeSet(dialogBinding.timePicker.getHour(), dialogBinding.timePicker.getMinute());
             getDialog().dismiss();
         });
 
         dialogBinding.btnCancel.setOnClickListener(v -> {
+            dialogBinding.btnSet.setEnabled(false);
+            dialogBinding.btnCancel.setEnabled(false);
             getDialog().dismiss();
         });
 

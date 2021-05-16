@@ -1,5 +1,7 @@
 package com.monash.paindiary.entity;
 
+import androidx.annotation.NonNull;
+
 import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.text.SimpleDateFormat;
@@ -50,6 +52,7 @@ public class PainRecordStr {
         this.pressure = pressure;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "PainRecordStr{" +

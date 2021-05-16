@@ -1,5 +1,6 @@
 package com.monash.paindiary.fragments;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Address;
@@ -9,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -56,6 +58,7 @@ public class MapViewFragment extends Fragment {
         binding = FragmentMapViewBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
         ((AppActivity) requireActivity()).ManualSelectNavigationItem(NavigationItem.MapView);
+        binding.btnLocate.setEnabled(true);
 
         mapView = binding.mapView;
         mapView.onCreate(savedInstanceState);
@@ -87,6 +90,8 @@ public class MapViewFragment extends Fragment {
     }
 
     private void btnLocateOnClicked(View view) {
+        hideKeyboard();
+        binding.btnLocate.setEnabled(false);
         String given_address = binding.editAddress.getText().toString();
         if (!given_address.isEmpty()) {
             try {
@@ -106,9 +111,12 @@ public class MapViewFragment extends Fragment {
                 }
             } catch (IOException e) {
                 Log.i("EXCEPTION", e.getMessage());
+            } finally {
+                binding.btnLocate.setEnabled(true);
             }
         } else {
             Toast.makeText(getContext(), "Please provide location address.", Toast.LENGTH_SHORT).show();
+            binding.btnLocate.setEnabled(true);
         }
     }
 
@@ -186,5 +194,13 @@ public class MapViewFragment extends Fragment {
         super.onDestroyView();
         binding.mapView.onDestroy();
         binding = null;
+    }
+
+    private void hideKeyboard() {
+        View view = getActivity().getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 }

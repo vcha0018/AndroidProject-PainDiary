@@ -7,14 +7,16 @@
     android:gravity="bottom"
     android:orientation="vertical"
     android:theme="@style/ThemeOverlay.MaterialComponents.Dark"
-    android:paddingLeft="20dp">
+    android:paddingStart="20dp"
+    android:paddingEnd="0dp">
 
     <ImageView
         android:id="@+id/image_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingBottom="10dp"
-        app:srcCompat="@drawable/circle_image_view"/>
+        app:srcCompat="@drawable/circle_image_view"
+        android:contentDescription="@string/user_picture_view" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -23,7 +25,7 @@
         android:layout_marginEnd="24dp"
         android:textAppearance="?attr/textAppearanceHeadline5"
         android:textColor="@color/black"
-        android:text="Vivek Chaudhari" />
+        android:text="@string/temp_text_user_name" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -32,5 +34,5 @@
         android:layout_marginEnd="24dp"
         android:textAppearance="?attr/textAppearanceBody2"
         android:textColor="@color/grey_800"
-        android:text="vivek.19142@gmail.com" />
+        android:text="@string/temp_text_user_email" />
 </LinearLayout>

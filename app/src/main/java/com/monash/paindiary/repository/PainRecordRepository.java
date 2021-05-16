@@ -9,11 +9,9 @@ import androidx.lifecycle.LiveData;
 import com.monash.paindiary.dao.PainRecordDAO;
 import com.monash.paindiary.database.PainRecordDatabase;
 import com.monash.paindiary.entity.PainRecord;
-import com.monash.paindiary.helper.Converters;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Supplier;
 
 public class PainRecordRepository {
     private PainRecordDAO painRecordDAO;
@@ -51,22 +49,12 @@ public class PainRecordRepository {
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public CompletableFuture<PainRecord> findByID(final int uid) {
-        return CompletableFuture.supplyAsync(new Supplier<PainRecord>() {
-            @Override
-            public PainRecord get() {
-                return painRecordDAO.findByID(uid);
-            }
-        }, PainRecordDatabase.databaseWriteExecutor);
+        return CompletableFuture.supplyAsync(() -> painRecordDAO.findByID(uid), PainRecordDatabase.databaseWriteExecutor);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public CompletableFuture<PainRecord> findByTimestamp(final double timestamp) {
-        return CompletableFuture.supplyAsync(new Supplier<PainRecord>() {
-            @Override
-            public PainRecord get() {
-                return painRecordDAO.findByTimestamp(timestamp);
-            }
-        }, PainRecordDatabase.databaseWriteExecutor);
+        return CompletableFuture.supplyAsync(() -> painRecordDAO.findByTimestamp(timestamp), PainRecordDatabase.databaseWriteExecutor);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)

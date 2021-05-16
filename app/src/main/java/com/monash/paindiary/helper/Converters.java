@@ -3,7 +3,6 @@ package com.monash.paindiary.helper;
 import androidx.annotation.NonNull;
 import androidx.room.TypeConverter;
 
-import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -20,11 +19,6 @@ public class Converters {
         return date == null ? null : date.getTime();
     }
 
-    /**
-     * Round to certain number of decimals
-     *
-     * @return
-     */
     @TypeConverter
     public static float customRoundFloat(float sourceNumber) {
         return Float.parseFloat(String.format("%.2f", sourceNumber));
@@ -56,5 +50,29 @@ public class Converters {
     public static String formatLong(long value) {
         DecimalFormat decimalFormat = new DecimalFormat("#,###");
         return decimalFormat.format(value);
+    }
+
+    public static String getFontAwesomeWeatherIcon(String openWeatherCode) {
+        if (openWeatherCode != null && !openWeatherCode.isEmpty()) {
+            switch (openWeatherCode.toLowerCase()) {
+                case "clear":
+                    return "f00d";
+                case "clouds":
+                    return "f013";
+                case "rain":
+                    return "f01a";
+                case "thunderstorm":
+                    return "f01d";
+                case "drizzle":
+                    return "f01b";
+                case "snow":
+                    return "f076";
+                case "mist":
+                    return "f021";
+                default:
+                    return "f063";
+            }
+        }
+        return "";
     }
 }

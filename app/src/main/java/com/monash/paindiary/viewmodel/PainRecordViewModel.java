@@ -12,7 +12,6 @@ import com.monash.paindiary.entity.PainRecord;
 import com.monash.paindiary.helper.Converters;
 import com.monash.paindiary.repository.PainRecordRepository;
 
-import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -67,8 +66,6 @@ public class PainRecordViewModel extends AndroidViewModel {
     }
 
     public void insert(PainRecord painRecord) {
-        // TODO does not store in two decimal event after converting.
-        // may be store in String?
         painRecord.setTemperature(Converters.customRoundFloat(painRecord.getTemperature()));
         painRecord.setHumidity(Converters.customRoundFloat(painRecord.getHumidity()));
         painRecord.setPressure(Converters.customRoundFloat(painRecord.getPressure()));

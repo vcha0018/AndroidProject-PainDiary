@@ -1,29 +1,28 @@
 package com.monash.paindiary.adapter;
 
-import android.app.Activity;
-import android.os.Bundle;
+import android.text.Html;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.navigation.NavOptions;
-import androidx.navigation.Navigation;
+import androidx.core.text.HtmlCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.monash.paindiary.R;
 import com.monash.paindiary.databinding.LayoutPainRecordBinding;
 import com.monash.paindiary.entity.PainRecord;
 import com.monash.paindiary.helper.Converters;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
-    private List<PainRecord> painRecordList;
+    private static final String THIS_CLASS = "RecyclerViewAdapter";
+    private final List<PainRecord> painRecordList;
 
     public RecyclerViewAdapter(List<PainRecord> painRecordList) {
         this.painRecordList = painRecordList;
@@ -41,29 +40,45 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public void onBindViewHolder(@NonNull RecyclerViewAdapter.ViewHolder viewHolder, int position) {
         final PainRecord painRecord = painRecordList.get(position);
         viewHolder.binding.textHiddenRecordId.setText(String.valueOf(painRecord.getUid()));
-        viewHolder.binding.textEntryDate.setText((new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss")).format(new Date(painRecord.getDateTime())));
+        viewHolder.binding.textEntryDate.setText((new SimpleDateFormat("EEE, dd MMM yyyy")).format(new Date(painRecord.getDateTime())));
         viewHolder.binding.painIntensityValue.setText(String.valueOf(painRecord.getPainIntensityLevel()));
         viewHolder.binding.painAreaValue.setText(painRecord.getPainArea());
         viewHolder.binding.dailyStepValue.setText(String.format("%s/%s", Converters.formatInteger(painRecord.getStepCount()), Converters.formatInteger(painRecord.getGoal())));
         viewHolder.binding.moodValue.setText(painRecord.getMood());
-        viewHolder.binding.temperatureValue.setText(String.valueOf(painRecord.getTemperature()));
-        viewHolder.binding.humidityValue.setText(String.valueOf(painRecord.getHumidity()));
-        viewHolder.binding.pressureValue.setText(String.valueOf(painRecord.getPressure()));
+        viewHolder.binding.temperatureValue.setText(Html.fromHtml(String.format("%s%s", Math.round(painRecord.getTemperature()), "&#176; C"), HtmlCompat.FROM_HTML_MODE_LEGACY));
+        viewHolder.binding.humidityValue.setText(Html.fromHtml(String.format("%s %s", Math.round(painRecord.getHumidity()), "%"), HtmlCompat.FROM_HTML_MODE_LEGACY));
+        viewHolder.binding.pressureValue.setText(Html.fromHtml(String.format("%s %s", Math.round(painRecord.getPressure()), "hPa"), HtmlCompat.FROM_HTML_MODE_LEGACY));
 
-        viewHolder.itemView.setOnClickListener(v -> {
-            int uid = Integer.parseInt(((TextView) v.findViewById(R.id.text_hidden_record_id)).getText().toString());
-            Bundle bundle = new Bundle();
-            bundle.putInt("uid", uid);
-            Navigation.findNavController(v).navigate(
-                    R.id.nav_pain_data_entry_fragment,
-                    bundle,
-                    new NavOptions.Builder()
-                            .setEnterAnim(R.anim.slide_up)
-                            .setExitAnim(R.anim.fade_out)
-                            .setPopExitAnim(R.anim.slide_down)
-                            .build()
-            );
-        });
+        // TODO Not required by assignment specification
+//        viewHolder.itemView.setOnClickListener(v -> {
+//            int uid = Integer.parseInt(((TextView) v.findViewById(R.id.text_hidden_record_id)).getText().toString());
+//            try {
+//                long timestamp = (new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss")).parse(
+//                        ((TextView) v.findViewById(R.id.text_entry_date)).getText().toString()
+//                ).getTime();
+//                if (isTodayRecord(timestamp)) {
+//                    Bundle bundle = new Bundle();
+//                    bundle.putInt("uid", uid);
+//                    Navigation.findNavController(v).navigate(
+//                            R.id.nav_pain_data_entry_fragment,
+//                            bundle,
+//                            new NavOptions.Builder()
+//                                    .setEnterAnim(R.anim.slide_up)
+//                                    .setExitAnim(R.anim.fade_out)
+//                                    .setPopExitAnim(R.anim.slide_down)
+//                                    .build()
+//                    );
+//                }
+//            } catch (Exception e) {
+//                Log.e(THIS_CLASS, "Exception: itemViewClick: " + e.getMessage());
+//            }
+//        });
+    }
+
+    private boolean isTodayRecord(long timestamp) {
+        LocalDate currentDate = Converters.convertToLocalDateViaInstant(new Date());
+        return timestamp >= Date.from(currentDate.atStartOfDay(ZoneId.systemDefault()).toInstant()).getTime() &&
+                timestamp <= Date.from(LocalDateTime.of(currentDate, LocalTime.MAX).atZone(ZoneId.systemDefault()).toInstant()).getTime();
     }
 
     @Override
@@ -73,6 +88,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         private LayoutPainRecordBinding binding;
+
         public ViewHolder(LayoutPainRecordBinding binding) {
             super(binding.getRoot());
             this.binding = binding;

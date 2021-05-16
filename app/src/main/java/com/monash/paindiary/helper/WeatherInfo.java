@@ -1,25 +1,22 @@
 package com.monash.paindiary.helper;
 
-import com.monash.paindiary.apis.weather.RetrofitInterface;
+import com.monash.paindiary.apis.weather.WeatherResponse;
 
 import java.util.Date;
 
 public class WeatherInfo {
     private static WeatherInfo INSTANCE;
-    private float temperature = 0;
-    private float humidity = 0;
-    private float pressure = 0;
-    private static RetrofitInterface retrofitInterface;
+    private WeatherResponse weatherResponse;
 
     public static final String API_KEY = "947c6e809cdbe01fcf3f6d54451666b3";
-    public static final String latitude = "-37.9139";
-    public static final String longitude = "145.1326";
+    public static final String latitude = "-37.8968";
+    public static final String longitude = "145.1471";
     public static final String units = "metric";
     public static Date lastFetched;
 
-    public static void setInstance(float temperature, float humidity, float pressure, boolean forceOverride) {
+    public static void setInstance(WeatherResponse weatherResponse, boolean forceOverride) {
         if (INSTANCE == null || forceOverride)
-            INSTANCE = new WeatherInfo(temperature, humidity, pressure);
+            INSTANCE = new WeatherInfo(weatherResponse);
     }
 
     public static void clearInstance() {
@@ -30,30 +27,14 @@ public class WeatherInfo {
         return INSTANCE;
     }
 
-    private WeatherInfo(float temperature, float humidity, float pressure) {
-        this.temperature = temperature;
-        this.humidity = humidity;
-        this.pressure = pressure;
+    private WeatherInfo(WeatherResponse weatherResponse) {
+        this.weatherResponse = weatherResponse;
     }
 
-    public static float getTemperature() {
+    public static WeatherResponse getWeatherResponse() {
         if (INSTANCE == null)
-            return 0;
+            return null;
         else
-            return INSTANCE.temperature;
-    }
-
-    public static float getHumidity() {
-        if (INSTANCE == null)
-            return 0;
-        else
-            return INSTANCE.humidity;
-    }
-
-    public static float getPressure() {
-        if (INSTANCE == null)
-            return 0;
-        else
-            return INSTANCE.pressure;
+            return INSTANCE.weatherResponse;
     }
 }

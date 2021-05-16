@@ -1,20 +1,21 @@
 package com.monash.paindiary.fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
-import com.google.android.material.textfield.TextInputLayout;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.monash.paindiary.R;
 import com.monash.paindiary.activities.AppActivity;
@@ -23,12 +24,6 @@ import com.monash.paindiary.databinding.FragmentSignInBinding;
 import com.monash.paindiary.enums.FragmentEnums;
 import com.monash.paindiary.helper.Helper;
 import com.monash.paindiary.helper.UserInfo;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-// TODO 1. Incorrect fields error messages
-// TODO 2. Background theme change
 
 /**
  * A simple {@link Fragment} subclass.
@@ -54,13 +49,11 @@ public class SignInFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-//        return inflater.inflate(R.layout.fragment_sign_in, container, false);
         binding = FragmentSignInBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
+        binding.btnSignIn.setEnabled(true);
 
-        binding.btnCreateAccount.setOnClickListener(v -> {
-            ((MainActivity) getActivity()).changeFragment(FragmentEnums.SignUp);
-        });
+        binding.btnCreateAccount.setOnClickListener(v -> ((MainActivity) getActivity()).changeFragment(FragmentEnums.SignUp));
 
         binding.btnSignIn.setOnClickListener(this::btnSignInOnClicked);
 
@@ -107,20 +100,31 @@ public class SignInFragment extends Fragment {
         binding = null;
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        ((MainActivity) getActivity()).ShowProgress(false);
+    }
+
     private void btnSignInOnClicked(View view) {
-        binding.btnSignIn.requestFocus();
+        ((MainActivity) getActivity()).ShowProgress(true);
+        hideKeyboard();
+        binding.btnSignIn.setEnabled(false);
         if (inputValidationCheck()) {
             try {
                 auth.signInWithEmailAndPassword(binding.editEmail.getText().toString(), binding.editPassword.getText().toString())
                         .addOnSuccessListener(authResult -> {
                             Toast.makeText(getContext(), "Login Success!", Toast.LENGTH_SHORT).show();
-                            UserInfo.setINSTANCE(binding.editEmail.getText().toString(), binding.editPassword.getText().toString(), true);
+                            UserInfo.setINSTANCE(binding.editEmail.getText().toString(), true);
                             Intent intent = new Intent(getActivity(), AppActivity.class);
                             startActivity(intent);
+                            ((MainActivity) getActivity()).ShowProgress(false);
+                            binding.btnSignIn.setEnabled(true);
                             getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                         })
                         .addOnFailureListener(e -> {
-                            // TODO: Find a way to detect username or password is incorrect or both.
+                            ((MainActivity) getActivity()).ShowProgress(false);
+                            binding.btnSignIn.setEnabled(true);
                             if (e.getMessage().contains("network error"))
                                 Toast.makeText(getContext(), "SignIn un-successful! Please check your internet connectivity and try again", Toast.LENGTH_SHORT).show();
                             else
@@ -130,7 +134,12 @@ public class SignInFragment extends Fragment {
             } catch (Exception e) {
                 Toast.makeText(getContext(), "SignIn un-successful! Please check your internet connectivity and try again", Toast.LENGTH_SHORT).show();
                 Log.e(THIS_CLASS, "EXCEPTION: btnSignInOnClicked: " + e.getMessage());
+                ((MainActivity) getActivity()).ShowProgress(false);
+                binding.btnSignIn.setEnabled(true);
             }
+        } else {
+            binding.btnSignIn.setEnabled(true);
+            ((MainActivity) getActivity()).ShowProgress(false);
         }
     }
 
@@ -154,5 +163,13 @@ public class SignInFragment extends Fragment {
             isAllValid = false;
         }
         return isAllValid;
+    }
+
+    private void hideKeyboard() {
+        View view = getActivity().getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 }

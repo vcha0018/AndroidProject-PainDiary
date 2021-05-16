@@ -26,12 +26,8 @@ import com.monash.paindiary.viewmodel.PainRecordViewModel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class Report1Fragment extends Fragment {
     private FragmentReport1Binding binding;
@@ -84,41 +80,42 @@ public class Report1Fragment extends Fragment {
                 else
                     painAreaCountMap.put(painRecord.getPainArea(), 1);
             }
-            Iterator iterator = painAreaCountMap.entrySet().iterator();
-            while (iterator.hasNext()) {
-                Map.Entry<String, Integer> entry = (Map.Entry<String, Integer>) iterator.next();
-                entries.add(new PieEntry(entry.getValue(), entry.getKey()));
+            if (painAreaCountMap.size() > 0) {
+                Iterator iterator = painAreaCountMap.entrySet().iterator();
+                while (iterator.hasNext()) {
+                    Map.Entry<String, Integer> entry = (Map.Entry<String, Integer>) iterator.next();
+                    entries.add(new PieEntry(entry.getValue(), entry.getKey()));
+                }
+
+                ArrayList<Integer> colors = new ArrayList<>();
+                for (int color : ColorTemplate.MATERIAL_COLORS) {
+                    colors.add(color);
+                }
+
+                for (int color : ColorTemplate.VORDIPLOM_COLORS) {
+                    colors.add(color);
+                }
+
+                PieDataSet dataSet = new PieDataSet(entries, "Pain Locations");
+                dataSet.setColors(colors);
+                dataSet.setSliceSpace(3f);
+
+
+                getActivity().runOnUiThread(() -> {
+                    PieData data = new PieData(dataSet);
+                    data.setDrawValues(true);
+                    data.setValueFormatter(new PercentFormatter(pieChart));
+                    data.setValueTextSize(15f);
+                    data.setValueTextColor(Color.BLACK);
+                    data.setHighlightEnabled(true);
+
+                    pieChart.setTransparentCircleRadius(0);
+                    pieChart.setData(data);
+                    pieChart.invalidate();
+
+                    pieChart.animateY(1400, Easing.EaseInOutQuad);
+                });
             }
-
-            ArrayList<Integer> colors = new ArrayList<>();
-            for (int color : ColorTemplate.MATERIAL_COLORS) {
-                colors.add(color);
-            }
-
-            for (int color : ColorTemplate.VORDIPLOM_COLORS) {
-                colors.add(color);
-            }
-
-            PieDataSet dataSet = new PieDataSet(entries, "Pain Locations");
-            dataSet.setColors(colors);
-            dataSet.setSliceSpace(3f);
-
-
-            getActivity().runOnUiThread(() -> {
-                PieData data = new PieData(dataSet);
-                data.setDrawValues(true);
-                data.setValueFormatter(new PercentFormatter(pieChart));
-                data.setValueTextSize(15f);
-                data.setValueTextColor(Color.BLACK);
-                data.setHighlightEnabled(true);
-
-                pieChart.setTransparentCircleRadius(0);
-                pieChart.setData(data);
-                pieChart.invalidate();
-
-                pieChart.animateY(1400, Easing.EaseInOutQuad);
-            });
-
         }).start();
     }
 }

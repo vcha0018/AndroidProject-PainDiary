@@ -1,7 +1,6 @@
 package com.monash.paindiary.fragments;
 
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,21 +17,14 @@ import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
-import com.github.mikephil.charting.formatter.LargeValueFormatter;
-import com.github.mikephil.charting.formatter.PercentFormatter;
-import com.github.mikephil.charting.utils.ColorTemplate;
 import com.monash.paindiary.R;
 import com.monash.paindiary.databinding.FragmentReport2Binding;
-import com.monash.paindiary.entity.PainRecord;
 import com.monash.paindiary.helper.Converters;
 import com.monash.paindiary.helper.IntValueFormatter;
 import com.monash.paindiary.viewmodel.PainRecordViewModel;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 public class Report2Fragment extends Fragment {
     private FragmentReport2Binding binding;
@@ -81,40 +73,38 @@ public class Report2Fragment extends Fragment {
     private void loadPieChartData() {
         PainRecordViewModel viewModel = new ViewModelProvider(requireActivity()).get(PainRecordViewModel.class);
         ArrayList<PieEntry> entries = new ArrayList<>();
-        new Thread(() -> {
-            viewModel.findRecordByDate(new Date()).thenApply(painRecord -> {
-                entries.add(new PieEntry(painRecord.getGoal() - painRecord.getStepCount(), "Remaining"));
-                entries.add(new PieEntry(painRecord.getStepCount(), "Completed", 0));
+        new Thread(() -> viewModel.findRecordByDate(new Date()).thenApply(painRecord -> {
+            entries.add(new PieEntry(painRecord.getStepCount(), "Completed", 0));
+            entries.add(new PieEntry(painRecord.getGoal() - painRecord.getStepCount(), "Remaining"));
 
-                ArrayList<Integer> colors = new ArrayList<>();
-                colors.add(getResources().getColor(R.color.grey_200, null));
-                colors.add(getResources().getColor(R.color.yellow_500, null));
+            ArrayList<Integer> colors = new ArrayList<>();
+            colors.add(getResources().getColor(R.color.yellow_500, null));
+            colors.add(getResources().getColor(R.color.grey_200, null));
 
-                PieDataSet dataSet = new PieDataSet(entries, "Pain Locations");
-                dataSet.setColors(colors);
-                dataSet.setSliceSpace(3f);
+            PieDataSet dataSet = new PieDataSet(entries, "Pain Locations");
+            dataSet.setColors(colors);
+            dataSet.setSliceSpace(3f);
 
-                getActivity().runOnUiThread(() -> {
-                    PieData data = new PieData(dataSet);
-                    data.setDrawValues(true);
-                    data.setValueFormatter(new IntValueFormatter());
-                    data.setValueTextSize(15f);
-                    data.setValueTextColor(Color.BLACK);
-                    data.setHighlightEnabled(true);
+            getActivity().runOnUiThread(() -> {
+                PieData data = new PieData(dataSet);
+                data.setDrawValues(true);
+                data.setValueFormatter(new IntValueFormatter());
+                data.setValueTextSize(15f);
+                data.setValueTextColor(Color.BLACK);
+                data.setHighlightEnabled(true);
 
-                    pieChart.setCenterText(String.format("Steps\n%s / %s", Converters.formatLong(painRecord.getStepCount()), Converters.formatLong(painRecord.getGoal())));
+                pieChart.setCenterText(String.format("Steps\n%s / %s", Converters.formatLong(painRecord.getStepCount()), Converters.formatLong(painRecord.getGoal())));
 
-                    pieChart.setNoDataText("No data available.");
-                    pieChart.setTransparentCircleRadius(0);
-                    pieChart.setData(data);
-                    pieChart.invalidate();
+                pieChart.setNoDataText("No data available.");
+                pieChart.setTransparentCircleRadius(0);
+                pieChart.setData(data);
+                pieChart.invalidate();
 
 //                    pieChart.animateY(1400, Easing.EaseInOutQuad);
-                    pieChart.animateXY(1400, 1400, Easing.EaseInQuad, Easing.EaseOutQuad);
-                });
-
-                return painRecord;
+                pieChart.animateY(1400, Easing.EaseInQuad);
             });
-        }).start();
+
+            return painRecord;
+        })).start();
     }
 }
