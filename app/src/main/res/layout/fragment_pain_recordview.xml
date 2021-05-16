@@ -15,6 +15,6 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView_pain_records"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

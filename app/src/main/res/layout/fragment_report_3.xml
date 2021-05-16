@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="match_parent">
+
+<TableLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:padding="10dp"
     android:stretchColumns="0">
 
@@ -92,13 +96,13 @@
 
     <TableRow
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_weight="1">
 
         <com.github.mikephil.charting.charts.LineChart
             android:id="@+id/relational_line_chart"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="340dp" />
     </TableRow>
 
     <View
@@ -187,3 +191,5 @@
             android:text="@string/text_perform_test" />
     </TableRow>
 </TableLayout>
+
+</ScrollView>

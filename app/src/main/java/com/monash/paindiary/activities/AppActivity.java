@@ -3,6 +3,7 @@ package com.monash.paindiary.activities;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -16,6 +17,7 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.navigation.NavigationView;
 import com.monash.paindiary.R;
 import com.monash.paindiary.databinding.ActivityAppBinding;
 import com.monash.paindiary.entity.PainRecord;
@@ -62,18 +64,20 @@ public class AppActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(binding.navView, navController);
         //Sets up a Toolbar for use with a NavController.
         NavigationUI.setupWithNavController(binding.appBar.toolbar, navController, appBarConfiguration);
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.getMenu().findItem(R.id.btn_sign_out).setOnMenuItemClickListener(this::navBtnSignOutOnClicked);
+        navigationView.getMenu().findItem(R.id.btn_dummy_records).setOnMenuItemClickListener(this::navBtnDummyDataAddOnClicked);
 
-        binding.navBtnSignOut.setOnClickListener(this::navBtnSignOutOnClicked);
-        binding.navBtnDummyDataAdd.setOnClickListener(this::navBtnDummyDataAddOnClicked);
     }
 
-    private void navBtnSignOutOnClicked(View view) {
+    private boolean navBtnSignOutOnClicked(MenuItem item) {
         ((DrawerLayout) findViewById(R.id.drawer_layout)).closeDrawers();
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
+        return true;
     }
 
-    private void navBtnDummyDataAddOnClicked(View view) {
+    private boolean navBtnDummyDataAddOnClicked(MenuItem item) {
         ((DrawerLayout) findViewById(R.id.drawer_layout)).closeDrawers();
         new MaterialAlertDialogBuilder(this)
                 .setTitle("Confirmation")
@@ -86,6 +90,7 @@ public class AppActivity extends AppCompatActivity {
                     // Nothing
                 })
                 .show();
+        return true;
     }
 
     public void ManualSelectNavigationItem(@NonNull NavigationItem navigationItem) {

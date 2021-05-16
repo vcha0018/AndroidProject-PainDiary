@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="off_white">#FFF8F8FF</color>
     <color name="yellow_500">#FFFFEB3B</color>
     <color name="yellow_theme_light">#FFFFFF72</color>
     <color name="yellow_theme_dark">#FFC8B900</color>

@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+import com.monash.paindiary.activities.AppActivity;
 import com.monash.paindiary.databinding.LayoutReminderDialogBinding;
 
 public class ReminderDialogFragment extends DialogFragment {
@@ -81,6 +82,12 @@ public class ReminderDialogFragment extends DialogFragment {
     public void onDestroyView() {
         super.onDestroyView();
         dialogBinding = null;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        ((AppActivity)getActivity()).ShowProgress(false);
     }
 
     @Override

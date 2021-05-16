@@ -184,6 +184,12 @@ public class MapViewFragment extends Fragment {
     }
 
     @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        ((AppActivity)getActivity()).ShowProgress(false);
+    }
+
+    @Override
     public void onLowMemory() {
         super.onLowMemory();
         binding.mapView.onLowMemory();

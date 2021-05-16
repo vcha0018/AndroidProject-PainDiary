@@ -31,8 +31,8 @@ public class MainActivity extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
 //        getSupportActionBar().hide();
 
-//        changeFragment(FragmentEnums.SignIn);
-        byPassSignIn();
+        changeFragment(FragmentEnums.SignIn);
+//        byPassSignIn();
     }
 
     private void byPassSignIn() {

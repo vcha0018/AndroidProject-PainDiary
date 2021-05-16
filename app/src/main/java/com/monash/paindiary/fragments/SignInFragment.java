@@ -114,7 +114,7 @@ public class SignInFragment extends Fragment {
             try {
                 auth.signInWithEmailAndPassword(binding.editEmail.getText().toString(), binding.editPassword.getText().toString())
                         .addOnSuccessListener(authResult -> {
-                            Toast.makeText(getContext(), "Login Success!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "Login Success!", Toast.LENGTH_LONG).show();
                             UserInfo.setINSTANCE(binding.editEmail.getText().toString(), true);
                             Intent intent = new Intent(getActivity(), AppActivity.class);
                             startActivity(intent);

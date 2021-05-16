@@ -45,13 +45,23 @@
             app:showAsAction="always" />
     </group>
 
-<!--    <group android:id="@+id/gp6">-->
-<!--        <item-->
-<!--            android:id="@+id/btn_sign_out"-->
-<!--            android:actionLayout="@layout/menu_item_layout"-->
-<!--            android:icon="@drawable/ic_baseline_logout_24"-->
-<!--            android:title="Sign out"-->
-<!--            app:showAsAction="always" />-->
-<!--    </group>-->
+    <group android:id="@+id/gp6">
+        <item
+            android:id="@+id/btn_sign_out"
+            android:actionLayout="@layout/menu_item_layout"
+            android:icon="@drawable/ic_baseline_logout_24"
+            android:title="Sign out"
+            app:showAsAction="always" />
+    </group>
+
+    <group android:id="@+id/gp7">
+        <item
+            android:id="@+id/btn_dummy_records"
+            android:actionLayout="@layout/menu_item_layout"
+            android:icon="@drawable/ic_baseline_add_24"
+            android:title="Generate Dummy data"
+            app:showAsAction="always"
+            android:visible="false"/>
+    </group>
 
 </menu>
