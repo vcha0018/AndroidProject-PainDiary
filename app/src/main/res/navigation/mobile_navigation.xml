@@ -19,9 +19,9 @@
     <fragment
         android:id="@+id/nav_map_view_fragment"
         android:name="com.monash.paindiary.fragments.MapViewFragment"
-        android:label="Map View" />
+        android:label="Map" />
     <fragment
         android:id="@+id/nav_report_view_fragment"
         android:name="com.monash.paindiary.fragments.ReportViewFragment"
-        android:label="Report View" />
+        android:label="Reports" />
 </navigation>

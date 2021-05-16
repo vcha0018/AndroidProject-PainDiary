@@ -76,6 +76,10 @@ public class PainDataEntryFragment extends Fragment implements ReminderDialogFra
         binding.sliderIntensityLevel.requestFocus();
         binding.btnSave.setEnabled(true);
         binding.btnEdit.setEnabled(true);
+        hideKeyboard();
+        binding.editStepCount.clearFocus();
+        binding.editGoal.clearFocus();
+        binding.sliderIntensityLevel.requestFocus();
 
         ((AppActivity) requireActivity()).ManualSelectNavigationItem(NavigationItem.DataEntry);
 
@@ -85,6 +89,11 @@ public class PainDataEntryFragment extends Fragment implements ReminderDialogFra
         binding.sliderIntensityLevel.addOnChangeListener(this::sliderIntensityLevelOnChanged);
         binding.editStepCount.addTextChangedListener(editStepCountTextWatcher());
         binding.editGoal.addTextChangedListener(editGoalTextWatcher());
+        binding.btnMoodVeryLow.setOnClickListener(this::btnMoodOnClicked);
+        binding.btnMoodLow.setOnClickListener(this::btnMoodOnClicked);
+        binding.btnMoodAverage.setOnClickListener(this::btnMoodOnClicked);
+        binding.btnMoodGood.setOnClickListener(this::btnMoodOnClicked);
+        binding.btnMoodVeryGood.setOnClickListener(this::btnMoodOnClicked);
         return view;
     }
 
@@ -127,6 +136,7 @@ public class PainDataEntryFragment extends Fragment implements ReminderDialogFra
 
     @Override
     public void onDestroyView() {
+        hideKeyboard();
         super.onDestroyView();
         binding = null;
     }
@@ -135,6 +145,10 @@ public class PainDataEntryFragment extends Fragment implements ReminderDialogFra
     public void onAlarmTimeSet(int hour, int minute) {
         setAlarm(hour, minute);
         ((AppActivity) getActivity()).isAlarmSet = true;
+    }
+
+    private void btnMoodOnClicked(View view) {
+        hideKeyboard();
     }
 
     private TextWatcher editStepCountTextWatcher() {
@@ -192,10 +206,12 @@ public class PainDataEntryFragment extends Fragment implements ReminderDialogFra
     }
 
     private void sliderIntensityLevelOnChanged(Slider slider, float value, boolean fromUser) {
+        hideKeyboard();
         binding.textSliderIntensityValue.setText(String.valueOf((int) value));
     }
 
     private void painAreaChipGroupOnCheckedChange(@NonNull ChipGroup chipGroup, int checkedId) {
+        hideKeyboard();
         for (int i = 0; i < chipGroup.getChildCount(); i++) {
             Chip chip = (Chip) chipGroup.getChildAt(i);
             chip.setTextColor(getResources().getColor(
@@ -344,6 +360,7 @@ public class PainDataEntryFragment extends Fragment implements ReminderDialogFra
     }
 
     private void btnEditOnClicked(View view) {
+        hideKeyboard();
         ((AppActivity) getActivity()).getSupportActionBar().setTitle("Modify Entry");
         setVisibilityOfUI(true, binding.mainDataEntryLayout);
         if (uid < 0) {

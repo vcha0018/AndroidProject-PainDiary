@@ -1,12 +1,16 @@
 package com.monash.paindiary.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
@@ -45,7 +49,7 @@ public class AppActivity extends AppCompatActivity {
         setSupportActionBar(binding.appBar.toolbar);
 
         //TODO : Remove in production in final
-        UserInfo.setINSTANCE("v@v.com", true);
+//        UserInfo.setINSTANCE("v@v.com", true);
         getSupportActionBar().setTitle("Home");
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration
                 .Builder(
@@ -67,6 +71,11 @@ public class AppActivity extends AppCompatActivity {
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.getMenu().findItem(R.id.btn_sign_out).setOnMenuItemClickListener(this::navBtnSignOutOnClicked);
         navigationView.getMenu().findItem(R.id.btn_dummy_records).setOnMenuItemClickListener(this::navBtnDummyDataAddOnClicked);
+
+        ((TextView) navigationView.getHeaderView(0).findViewById(R.id.nav_header_user_email)).setText(UserInfo.getUserEmail());
+        if (UserInfo.getInstance() != null) {
+            ((TextView) navigationView.getHeaderView(0).findViewById(R.id.nav_header_user_name)).setText(UserInfo.getInstance().getUserFullName());
+        }
 
     }
 

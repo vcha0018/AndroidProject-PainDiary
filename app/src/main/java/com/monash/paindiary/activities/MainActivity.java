@@ -1,5 +1,6 @@
 package com.monash.paindiary.activities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -42,9 +43,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void changeFragment(FragmentEnums replaceFragment) {
         ShowProgress(true);
-        if (replaceFragment == FragmentEnums.SignIn && signInFragment.isVisible()) {
-            fragmentManager.beginTransaction().remove(signInFragment).commit();
-        }
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         Fragment fragmentFromStack = fragmentManager.findFragmentByTag(replaceFragment.name());
         if (fragmentFromStack != null) {
@@ -62,6 +60,20 @@ public class MainActivity extends AppCompatActivity {
             }
             transaction.commit();
         }
+    }
+
+    @Override
+    protected void onPause() {
+        for (Fragment fragment : fragmentManager.getFragments())
+            fragmentManager.beginTransaction().remove(fragment).commit();
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        if (!signInFragment.isAdded())
+            changeFragment(FragmentEnums.SignIn);
+        super.onResume();
     }
 
     @Override

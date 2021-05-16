@@ -61,7 +61,7 @@
             android:icon="@drawable/ic_baseline_add_24"
             android:title="Generate Dummy data"
             app:showAsAction="always"
-            android:visible="false"/>
+            android:visible="true"/>
     </group>
 
 </menu>
