@@ -34,9 +34,9 @@
         <item name="android:textColorHighlight">@color/teal_100</item>
     </style>
 
-    <style name="Theme.PainDiary.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"></style>
+    <style name="Theme.PainDiary.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
-    <style name="Theme.PainDiary.PopupOverlay" parent="ThemeOverlay.MaterialComponents.Light"></style>
+    <style name="Theme.PainDiary.PopupOverlay" parent="ThemeOverlay.MaterialComponents.Light" />
 
     <style name="Widget.PainDiary.Chip.Choice" parent="Widget.MaterialComponents.Chip.Choice">
         <item name="materialThemeOverlay">@style/ThemeOverlay.PainDiary.Chip.Choice</item>

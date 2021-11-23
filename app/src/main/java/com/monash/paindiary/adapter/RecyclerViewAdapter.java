@@ -1,33 +1,52 @@
 package com.monash.paindiary.adapter;
 
+import android.app.Activity;
+import android.content.Context;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.core.text.HtmlCompat;
+import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.monash.paindiary.databinding.LayoutPainRecordBinding;
 import com.monash.paindiary.entity.PainRecord;
 import com.monash.paindiary.helper.Converters;
+import com.monash.paindiary.viewmodel.PainRecordViewModel;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
     private static final String THIS_CLASS = "RecyclerViewAdapter";
-    private final List<PainRecord> painRecordList;
+    private List<PainRecord> painRecordList = new ArrayList<>();
 
-    public RecyclerViewAdapter(List<PainRecord> painRecordList) {
+    public void setData(List<PainRecord> painRecordList) {
         this.painRecordList = painRecordList;
+        notifyDataSetChanged();
     }
+//    public RecyclerViewAdapter(List<PainRecord> painRecordList) {
+//        this.painRecordList = painRecordList;
+//    }
 
+//    public RecyclerViewAdapter(FragmentActivity fragmentActivity, LifecycleOwner lifecycleOwner) {
+//        PainRecordViewModel viewModel = new ViewModelProvider(fragmentActivity).get(PainRecordViewModel.class);
+//        viewModel.getAllPainRecords().observe(lifecycleOwner, painRecords -> {
+//            painRecordList = painRecords;
+//            notifyDataSetChanged();
+//        });
+//    }
 
     @NonNull
     @Override

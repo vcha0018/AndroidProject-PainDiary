@@ -37,11 +37,13 @@ public class PainRecordViewFragment extends Fragment {
         View view = binding.getRoot();
         ((AppActivity) requireActivity()).ManualSelectNavigationItem(NavigationItem.RecordView);
 
+        recyclerViewAdapter = new RecyclerViewAdapter();
+        binding.recyclerViewPainRecords.setLayoutManager(new LinearLayoutManager(getContext()));
+        binding.recyclerViewPainRecords.setAdapter(recyclerViewAdapter);
+
         PainRecordViewModel viewModel = new ViewModelProvider(requireActivity()).get(PainRecordViewModel.class);
         viewModel.getAllPainRecords().observe(getViewLifecycleOwner(), painRecords -> {
-            recyclerViewAdapter = new RecyclerViewAdapter(painRecords);
-            binding.recyclerViewPainRecords.setLayoutManager(new LinearLayoutManager(getContext()));
-            binding.recyclerViewPainRecords.setAdapter(recyclerViewAdapter);
+            recyclerViewAdapter.setData(painRecords);
         });
 
         return view;

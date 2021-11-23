@@ -160,7 +160,7 @@ public class SignUpFragment extends Fragment {
                                 Toast.makeText(getContext(), "Registration successful, please log in", Toast.LENGTH_LONG).show();
                                 ((MainActivity) getActivity()).changeFragment(FragmentEnums.SignIn);
                             } else {
-                                Toast.makeText(getContext(), "Fail to create new user, Please check your internet connectivity and try again", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(), "Fail to create new user.", Toast.LENGTH_SHORT).show();
                                 Log.e(THIS_CLASS, "btnSignUpOnClick: MESSAGE FROM FIREBASE: " + task.getException());
                             }
                             ((MainActivity) getActivity()).ShowProgress(false);
@@ -169,7 +169,7 @@ public class SignUpFragment extends Fragment {
                             binding.btnClose.setEnabled(true);
                         })
                         .addOnFailureListener(e -> {
-                            Toast.makeText(getContext(), "Registration un-successful! Please check your internet connectivity and try again", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "Registration un-successful! " + e.getMessage(), Toast.LENGTH_SHORT).show();
                             Log.e(THIS_CLASS, "EXCEPTION: btnSignUpOnClick: " + e.getMessage());
                             ((MainActivity) getActivity()).ShowProgress(false);
                             binding.btnSignup.setEnabled(true);
@@ -188,6 +188,7 @@ public class SignUpFragment extends Fragment {
             binding.btnSignup.setEnabled(true);
             binding.btnSignIn.setEnabled(true);
             binding.btnClose.setEnabled(true);
+            ((MainActivity) getActivity()).ShowProgress(false);
         }
     }
 
